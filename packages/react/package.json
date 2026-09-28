@@ -1,6 +1,6 @@
 {
     "name": "@erag/inertia-forms-react",
-    "version": "1.0.0",
+    "version": "0.0.1",
     "description": "React renderer for erag/inertia-forms. Render Laravel-defined forms with one <Form> component.",
     "type": "module",
     "license": "MIT",

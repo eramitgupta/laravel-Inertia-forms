@@ -4,7 +4,7 @@
 
 | Version | Supported |
 | ------- | --------- |
-| 1.x (latest release) | ✅ Security fixes |
+| 0.x (latest release) | ✅ Security fixes |
 | Older releases | ❌ Please upgrade |
 
 Security fixes ship in a new release of the latest version. Keep Laravel, Inertia, your frontend framework and this package up to date.
