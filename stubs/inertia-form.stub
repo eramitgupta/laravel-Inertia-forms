@@ -1,0 +1,26 @@
+<?php
+
+namespace {{ namespace }};
+
+use Erag\InertiaForms\Fields\Submit;
+use Erag\InertiaForms\Fields\TextInput;
+use Erag\InertiaForms\Form;
+
+class {{ class }} extends Form
+{
+    /**
+     * Named route the form submits to.
+     */
+    protected ?string $actionRoute = null;
+
+    /**
+     * @return array<int, \Erag\InertiaForms\Fields\Field|\Erag\InertiaForms\Fields\Fieldset>
+     */
+    public function fields(): array
+    {
+        return [
+            TextInput::make('name')->required(),
+            Submit::make('Save'),
+        ];
+    }
+}

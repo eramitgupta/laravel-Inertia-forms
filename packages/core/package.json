@@ -1,0 +1,14 @@
+{
+    "name": "@erag/inertia-forms-core",
+    "private": true,
+    "version": "1.0.0",
+    "type": "module",
+    "description": "Shared schema types, visibility engine, and Tailwind classes for the Inertia Forms frontend packages. Bundled into each framework package.",
+    "scripts": {
+        "typecheck": "tsc --noEmit -p tsconfig.json",
+        "test": "vitest run"
+    },
+    "devDependencies": {
+        "vitest": "^4.1.11"
+    }
+}

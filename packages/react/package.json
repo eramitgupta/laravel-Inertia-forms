@@ -1,0 +1,68 @@
+{
+    "name": "@erag/inertia-forms-react",
+    "version": "1.0.0",
+    "description": "React renderer for erag/inertia-forms. Render Laravel-defined forms with one <Form> component.",
+    "type": "module",
+    "license": "MIT",
+    "author": {
+        "name": "Er Amit Gupta",
+        "email": "info.eramitgupta@gmail.com",
+        "url": "https://erag.in"
+    },
+    "bugs": {
+        "url": "https://github.com/erag-labs/laravel-Inertia-forms/issues"
+    },
+    "funding": {
+        "type": "github",
+        "url": "https://github.com/sponsors/eramitgupta"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/erag-labs/laravel-Inertia-forms.git",
+        "directory": "packages/react"
+    },
+    "homepage": "https://erag.in/laravel-inertia-forms/",
+    "keywords": [
+        "react",
+        "inertia",
+        "inertiajs",
+        "laravel",
+        "forms",
+        "form-builder",
+        "tailwind"
+    ],
+    "files": [
+        "dist",
+        "README.md"
+    ],
+    "main": "./dist/inertia-forms-react.js",
+    "module": "./dist/inertia-forms-react.js",
+    "types": "./dist/react/src/index.d.ts",
+    "exports": {
+        ".": {
+            "types": "./dist/react/src/index.d.ts",
+            "import": "./dist/inertia-forms-react.js"
+        }
+    },
+    "sideEffects": false,
+    "scripts": {
+        "dev": "vite build --watch",
+        "build": "vite build",
+        "typecheck": "tsc --noEmit -p tsconfig.json"
+    },
+    "peerDependencies": {
+        "@inertiajs/react": "^3.0.0",
+        "react": "^19.0.0",
+        "react-dom": "^19.0.0"
+    },
+    "devDependencies": {
+        "@inertiajs/react": "^3.0.0",
+        "@types/react": "^19.2.0",
+        "@types/react-dom": "^19.2.0",
+        "@vitejs/plugin-react": "^6.0.0",
+        "react": "^19.2.0",
+        "react-dom": "^19.2.0",
+        "vite": "^8.0.0",
+        "vite-plugin-dts": "^5.0.0"
+    }
+}

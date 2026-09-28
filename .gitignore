@@ -1,0 +1,11 @@
+/vendor
+node_modules
+dist
+.phpunit.cache
+.phpunit.result.cache
+composer.lock
+.DS_Store
+.idea
+.vscode
+packages/svelte/src/lib/core
+packages/svelte/.svelte-kit

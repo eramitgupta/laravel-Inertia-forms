@@ -1,0 +1,25 @@
+{
+    "name": "inertia-forms-workspace",
+    "private": true,
+    "workspaces": [
+        "packages/core",
+        "packages/react",
+        "packages/vue",
+        "packages/svelte"
+    ],
+    "scripts": {
+        "build": "npm run build --workspaces --if-present",
+        "typecheck": "npm run typecheck --workspaces --if-present",
+        "test": "npm run test --workspaces --if-present",
+        "format": "prettier --write \"packages/*/src/**/*.{ts,tsx,vue,svelte}\" \"packages/core/tests/**/*.ts\"",
+        "format:check": "prettier --check \"packages/*/src/**/*.{ts,tsx,vue,svelte}\" \"packages/core/tests/**/*.ts\""
+    },
+    "devDependencies": {
+        "prettier": "^3.6.2",
+        "prettier-plugin-svelte": "^3.4.0",
+        "typescript": "^5.9.0"
+    },
+    "engines": {
+        "node": ">=22.0.0"
+    }
+}

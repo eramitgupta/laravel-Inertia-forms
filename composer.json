@@ -1,0 +1,86 @@
+{
+    "name": "erag/inertia-forms",
+    "description": "Define Laravel forms in PHP and render them with Inertia.js in Vue, React, or Svelte. Validation, conditional visibility, authorization, and model binding included.",
+    "keywords": [
+        "laravel",
+        "inertia",
+        "inertiajs",
+        "forms",
+        "form-builder",
+        "vue",
+        "react",
+        "svelte",
+        "tailwind",
+        "validation"
+    ],
+    "type": "library",
+    "license": "MIT",
+    "homepage": "https://erag.in/laravel-inertia-forms/",
+    "authors": [
+        {
+            "name": "Er Amit Gupta",
+            "email": "info.eramitgupta@gmail.com",
+            "homepage": "https://erag.in",
+            "role": "Creator & Maintainer"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/erag-labs/laravel-Inertia-forms/issues",
+        "source": "https://github.com/erag-labs/laravel-Inertia-forms",
+        "docs": "https://erag.in/laravel-inertia-forms/",
+        "security": "https://github.com/erag-labs/laravel-Inertia-forms/security/policy"
+    },
+    "funding": [
+        {
+            "type": "github",
+            "url": "https://github.com/sponsors/eramitgupta"
+        }
+    ],
+    "require": {
+        "php": "^8.3",
+        "illuminate/auth": "^13.0",
+        "illuminate/console": "^13.0",
+        "illuminate/contracts": "^13.0",
+        "illuminate/database": "^13.0",
+        "illuminate/http": "^13.0",
+        "illuminate/routing": "^13.0",
+        "illuminate/support": "^13.0",
+        "illuminate/validation": "^13.0",
+        "inertiajs/inertia-laravel": "^3.0"
+    },
+    "require-dev": {
+        "laravel/pint": "^1.20",
+        "orchestra/testbench": "^11.0",
+        "pestphp/pest": "^5.0",
+        "pestphp/pest-plugin-laravel": "^5.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Erag\\InertiaForms\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Erag\\InertiaForms\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Erag\\InertiaForms\\InertiaFormsServiceProvider"
+            ]
+        }
+    },
+    "scripts": {
+        "test": "pest",
+        "format": "pint"
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}

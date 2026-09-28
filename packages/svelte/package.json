@@ -1,0 +1,69 @@
+{
+    "name": "@erag/inertia-forms-svelte",
+    "version": "1.0.0",
+    "description": "Svelte renderer for erag/inertia-forms. Render Laravel-defined forms with one <Form> component.",
+    "type": "module",
+    "license": "MIT",
+    "author": {
+        "name": "Er Amit Gupta",
+        "email": "info.eramitgupta@gmail.com",
+        "url": "https://erag.in"
+    },
+    "bugs": {
+        "url": "https://github.com/erag-labs/laravel-Inertia-forms/issues"
+    },
+    "funding": {
+        "type": "github",
+        "url": "https://github.com/sponsors/eramitgupta"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/erag-labs/laravel-Inertia-forms.git",
+        "directory": "packages/svelte"
+    },
+    "homepage": "https://erag.in/laravel-inertia-forms/",
+    "keywords": [
+        "svelte",
+        "inertia",
+        "inertiajs",
+        "laravel",
+        "forms",
+        "form-builder",
+        "tailwind"
+    ],
+    "files": [
+        "dist",
+        "README.md"
+    ],
+    "svelte": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "svelte": "./dist/index.js"
+        }
+    },
+    "sideEffects": false,
+    "scripts": {
+        "sync-core": "node scripts/sync-core.mjs",
+        "predev": "npm run sync-core",
+        "dev": "svelte-package -i src/lib -o dist -w",
+        "prebuild": "npm run sync-core",
+        "build": "svelte-package -i src/lib -o dist",
+        "pretypecheck": "npm run sync-core",
+        "typecheck": "svelte-check --tsconfig ./tsconfig.json"
+    },
+    "peerDependencies": {
+        "@inertiajs/svelte": "^3.0.0",
+        "svelte": "^5.0.0"
+    },
+    "devDependencies": {
+        "@inertiajs/svelte": "^3.7.1",
+        "@sveltejs/package": "^2.5.8",
+        "@sveltejs/vite-plugin-svelte": "^7.3.1",
+        "svelte": "^5.57.1",
+        "svelte-check": "^4.7.6",
+        "typescript": "^5.9.3",
+        "vite": "^8.3.1"
+    }
+}
