@@ -35,4 +35,4 @@ Documentation: **https://erag.in/laravel-inertia-forms/**
 
 ## Credits
 
-Created and maintained by [Er Amit Gupta](https://github.com/eramitgupta) at [Erag Labs](https://github.com/erag-labs). MIT License © ERAG.
+Created and maintained by [Er Amit Gupta](https://github.com/eramitgupta) at [Erag Labs](https://github.com/erag-labs). MIT License © Amit Gupta.
