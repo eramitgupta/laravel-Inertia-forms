@@ -10,7 +10,7 @@
         "url": "https://erag.in"
     },
     "bugs": {
-        "url": "https://github.com/erag-labs/laravel-Inertia-forms/issues"
+        "url": "https://github.com/eramitgupta/laravel-Inertia-forms/issues"
     },
     "funding": {
         "type": "github",
@@ -18,7 +18,7 @@
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/erag-labs/laravel-Inertia-forms.git",
+        "url": "git+https://github.com/eramitgupta/laravel-Inertia-forms.git",
         "directory": "packages/react"
     },
     "homepage": "https://erag.in/laravel-inertia-forms/",

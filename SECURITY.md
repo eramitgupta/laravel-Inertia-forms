@@ -15,7 +15,7 @@ This policy covers every package in this repository: `erag/inertia-forms` (Packa
 
 **Please do not report security issues in public issues, discussions or pull requests.**
 
-1. Go to the repository's [Security tab](https://github.com/erag-labs/laravel-Inertia-forms/security).
+1. Go to the repository's [Security tab](https://github.com/eramitgupta/laravel-Inertia-forms/security).
 2. Choose **Report a vulnerability** to open a private report that only the maintainers can see.
 3. Include:
    - the affected package and version, plus your Laravel, PHP and frontend versions

@@ -2,7 +2,7 @@
 
 Thanks for helping improve Laravel Inertia Forms. Bug fixes, new fields, docs and ideas are all welcome.
 
-For a large change, or one that changes the public API, please [open an issue](https://github.com/erag-labs/laravel-Inertia-forms/issues) first so we can agree on the approach before you write the code.
+For a large change, or one that changes the public API, please [open an issue](https://github.com/eramitgupta/laravel-Inertia-forms/issues) first so we can agree on the approach before you write the code.
 
 ## Requirements
 
@@ -11,12 +11,12 @@ For a large change, or one that changes the public API, please [open an issue](h
 
 ## 1. Fork and clone
 
-Fork [erag-labs/laravel-Inertia-forms](https://github.com/erag-labs/laravel-Inertia-forms) on GitHub, then clone your fork:
+Fork [eramitgupta/laravel-Inertia-forms](https://github.com/eramitgupta/laravel-Inertia-forms) on GitHub, then clone your fork:
 
 ```bash
 git clone https://github.com/<your-username>/laravel-Inertia-forms.git
 cd laravel-Inertia-forms
-git remote add upstream https://github.com/erag-labs/laravel-Inertia-forms.git
+git remote add upstream https://github.com/eramitgupta/laravel-Inertia-forms.git
 ```
 
 ## 2. Install
@@ -132,7 +132,7 @@ git push origin fix/combobox-keyboard
 
 ## 9. Open a pull request
 
-Open a pull request against `main` on [erag-labs/laravel-Inertia-forms](https://github.com/erag-labs/laravel-Inertia-forms/pulls) and fill in the template:
+Open a pull request against `main` on [eramitgupta/laravel-Inertia-forms](https://github.com/eramitgupta/laravel-Inertia-forms/pulls) and fill in the template:
 
 - what the change does and why
 - the type of change (bug fix, feature, breaking change, docs)
@@ -147,7 +147,7 @@ The docs at [erag.in/laravel-inertia-forms](https://erag.in/laravel-inertia-form
 ```bash
 git clone https://github.com/eramitgupta/erag.git
 cd erag
-git clone https://github.com/erag-labs/laravel-Inertia-forms.git inertia-forms-library
+git clone https://github.com/eramitgupta/laravel-Inertia-forms.git inertia-forms-library
 composer install --working-dir=inertia-forms-library
 cd laravel-inertia-forms
 npm install
@@ -166,7 +166,7 @@ php demo/export.php ../inertia-forms-library
 
 ## Reporting bugs
 
-Open a [GitHub issue](https://github.com/erag-labs/laravel-Inertia-forms/issues) with:
+Open a [GitHub issue](https://github.com/eramitgupta/laravel-Inertia-forms/issues) with:
 
 - the smallest form class that shows the problem
 - your frontend (Vue, React or Svelte) and the package versions
@@ -174,7 +174,7 @@ Open a [GitHub issue](https://github.com/erag-labs/laravel-Inertia-forms/issues)
 
 ## Security
 
-Please do not report security issues in public issues. Report them privately from the repository's [Security tab](https://github.com/erag-labs/laravel-Inertia-forms/security), as described in [SECURITY.md](SECURITY.md).
+Please do not report security issues in public issues. Report them privately from the repository's [Security tab](https://github.com/eramitgupta/laravel-Inertia-forms/security), as described in [SECURITY.md](SECURITY.md).
 
 ## Code of conduct
 

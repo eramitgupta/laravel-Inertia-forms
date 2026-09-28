@@ -25,10 +25,10 @@
         }
     ],
     "support": {
-        "issues": "https://github.com/erag-labs/laravel-Inertia-forms/issues",
-        "source": "https://github.com/erag-labs/laravel-Inertia-forms",
+        "issues": "https://github.com/eramitgupta/laravel-Inertia-forms/issues",
+        "source": "https://github.com/eramitgupta/laravel-Inertia-forms",
         "docs": "https://erag.in/laravel-inertia-forms/",
-        "security": "https://github.com/erag-labs/laravel-Inertia-forms/security/policy"
+        "security": "https://github.com/eramitgupta/laravel-Inertia-forms/security/policy"
     },
     "funding": [
         {

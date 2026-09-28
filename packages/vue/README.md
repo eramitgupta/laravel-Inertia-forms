@@ -1,6 +1,6 @@
 # @erag/inertia-forms-vue
 
-Vue renderer for [erag/inertia-forms](https://github.com/erag-labs/laravel-Inertia-forms). Define the form in a Laravel class, render it with one component.
+Vue renderer for [erag/inertia-forms](https://github.com/eramitgupta/laravel-Inertia-forms). Define the form in a Laravel class, render it with one component.
 
 ```bash
 composer require erag/inertia-forms
