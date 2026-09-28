@@ -1,31 +1,68 @@
 # Security Policy
 
-## Supported Versions
+## Supported versions
 
-| Version                  | Security support    |
-| ------------------------ | ------------------- |
-| Latest published release | Supported           |
-| Older releases           | Upgrade recommended |
+| Version | Supported |
+| ------- | --------- |
+| 1.x (latest release) | ✅ Security fixes |
+| Older releases | ❌ Please upgrade |
 
-Security fixes are delivered through the latest published release. Consumers should keep Laravel, Inertia, their frontend framework, browsers, and this package current.
+Security fixes ship in a new release of the latest version. Keep Laravel, Inertia, your frontend framework and this package up to date.
 
-## Reporting a Vulnerability
+This policy covers every package in this repository: `erag/inertia-forms` (Packagist) and `@erag/inertia-forms-vue`, `@erag/inertia-forms-react` and `@erag/inertia-forms-svelte` (npm).
 
-Do not disclose suspected vulnerabilities in public issues, discussions, or pull requests.
+## Reporting a vulnerability
 
-Submit a private report from the repository's [Security tab](https://github.com/erag-labs/laravel-Inertia-forms/security): choose **Report a vulnerability**. Include:
+**Please do not report security issues in public issues, discussions or pull requests.**
 
-- The affected package version and environment.
-- The vulnerability type and potential impact.
-- Reproduction steps or a minimal proof of concept.
-- Any known mitigations or suggested remediation.
+1. Go to the repository's [Security tab](https://github.com/erag-labs/laravel-Inertia-forms/security).
+2. Choose **Report a vulnerability** to open a private report that only the maintainers can see.
+3. Include:
+   - the affected package and version, plus your Laravel, PHP and frontend versions
+   - the type of issue and its possible impact
+   - steps to reproduce, or a small proof of concept
+   - any fix or workaround you know of
 
-Remove unrelated credentials, tokens, and personal information. Reports should receive an initial acknowledgement within 48 hours. Validation, remediation, and release timing depend on severity and complexity. Please allow time for a coordinated fix before public disclosure.
+Leave out real credentials, tokens and personal data.
 
-## Form Security
+### What happens next
 
-- Browser-side visibility and disabled or read-only states are for the user interface only. Always validate on the server with `#[Validate]` or `$form->validate()`.
-- `visibleWhen()` and `hiddenWhen()` are not permission checks. Use `authorizedWhen()` or `authorize()` for fields a user must never see or submit.
-- Only use `$form->validated()` when saving data, never `$request->all()`, so unknown and hidden fields are ignored.
-- `Select::searchUsing()` options are served by a package endpoint that anyone who can load the page can call. It only accepts your own form classes (the class name is encrypted) and runs the form and field authorization checks, but add `auth` to `inertia-forms.search.middleware` when the options are private, and only return the columns you want to show.
-- Treat uploaded files as untrusted: keep type and size rules, and store files outside the public web root unless they are meant to be public.
+- We aim to acknowledge your report within **48 hours**.
+- We confirm the issue, work on a fix, and keep you updated in the private report.
+- When the fix is released, we publish a security advisory and credit you, unless you prefer to stay anonymous.
+
+Please give us time to release a fix before you disclose the issue publicly.
+
+## Using the package safely
+
+### Always validate on the server
+
+- Hidden, disabled and read-only states in the browser are for the user interface only. Validate every request with `#[Validate]` or `$form->validate()`.
+- Save only `$form->validated()`, never `$request->all()`. Unknown fields, hidden fields and fields the user is not authorized to see are left out of it.
+
+### Visibility is not permission
+
+- `visibleWhen()` and `hiddenWhen()` only show or hide fields. Use `authorize()` or `authorizedWhen()` for fields, fieldsets or forms a user must never see or submit; their rules are removed too.
+
+### Package endpoints
+
+The package registers two small endpoints. Both only accept your own form classes (the class name is encrypted in the page), return `404` for anything else, and run the form's authorization checks.
+
+| Endpoint | Used by | Config key |
+| --- | --- | --- |
+| `POST _inertia-forms/search` | `Combobox::searchUsing()` (server search) | `inertia-forms.search.middleware` |
+| `POST _inertia-forms/validate-step` | Wizard forms (step checks) | `inertia-forms.wizard.middleware` |
+
+- Both use the `web` and `throttle:60,1` middleware by default. Add `auth`, or your own middleware, when the options or the form are private.
+- In `searchUsing()`, return only the columns you want to show, and limit the query.
+- The step check validates the data only; it never saves anything.
+
+### Raw HTML and SVG
+
+- `Html::make()` renders its content as raw HTML. Only pass markup you wrote yourself, **never user input**, or you open your app to cross-site scripting (XSS). Use `Text::make()`, `Heading::make()` or `Callout::make()` for text; they escape it.
+- Icons registered with `Icon::register()` or `config('inertia-forms.icons')` are rendered as SVG markup. The package rejects scripts, event handlers and external references, but register only icons you trust, never icons from user input.
+
+### File uploads
+
+- Treat uploaded files as untrusted. Keep the type (`accept()`, `image()`) and size (`maxSize()`) rules on the field.
+- Store uploads outside the public web root unless they are meant to be public, and never trust the original file name.
