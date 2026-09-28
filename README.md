@@ -34,7 +34,6 @@ Write the fields, layout, and validation once in a Laravel class. The same class
 ## Support
 
 - 🐞 **Bugs and ideas** — open a [GitHub issue](https://github.com/erag-labs/laravel-Inertia-forms/issues).
-- 🔒 **Security issues** — report them privately, as described in [SECURITY.md](SECURITY.md).
 - ⭐ **Like it?** — [star the repository](https://github.com/erag-labs/laravel-Inertia-forms) so more Laravel developers find it.
 
 ## Sponsorship
