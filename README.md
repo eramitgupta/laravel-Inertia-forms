@@ -6,7 +6,7 @@
 
 Write the fields, layout, and validation once in a Laravel class. The same class draws the form in the browser and validates the request on the server, so you never repeat labels, rules, or error handling again.
 
-[Documentation](https://erag.in/laravel-inertia-forms/) · [Live Demo](https://erag.in/laravel-inertia-forms/demo.html) · [Sponsor](https://github.com/sponsors/eramitgupta)
+[Documentation](https://erag.in/laravel-inertia-forms/) · [Live Demo](https://erag.in/laravel-inertia-forms/demo.html) · [Demo Apps](#demo-apps) · [Sponsor](https://github.com/sponsors/eramitgupta)
 
 </div>
 
@@ -30,6 +30,16 @@ Write the fields, layout, and validation once in a Laravel class. The same class
 ## Documentation
 
 **[https://erag.in/laravel-inertia-forms/](https://erag.in/laravel-inertia-forms/)**
+
+## Demo apps
+
+Complete Laravel 13 + Inertia 3 apps built with this package: 15 real-world forms, each with full CRUD (list, create, view, edit, delete), search, file uploads, custom fields and a Pest test suite. Clone one to see the package in a real project.
+
+| Frontend  | Repository                                                                                  |
+| --------- | ------------------------------------------------------------------------------------------- |
+| ⚛️ React  | [eramitgupta/demo-Inertia-forms-react](https://github.com/eramitgupta/demo-Inertia-forms-react)   |
+| 💚 Vue    | [eramitgupta/demo-Inertia-forms-vue](https://github.com/eramitgupta/demo-Inertia-forms-vue)       |
+| 🧡 Svelte | [eramitgupta/demo-Inertia-forms-savlte](https://github.com/eramitgupta/demo-Inertia-forms-savlte) |
 
 ## Support
 
