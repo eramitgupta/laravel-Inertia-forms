@@ -27,6 +27,19 @@ Write the fields, layout, and validation once in a Laravel class. The same class
 - 🌗 **Accessible and themeable** — labels, `aria-*`, focus handling, dark mode, accent colors, Tailwind CSS 4.
 - 🤖 **Artisan and AI ready** — `erag:install-inertia-forms`, `make:form`, and Laravel Boost guidelines with a skill for AI agents.
 
+## Installation
+
+```bash
+composer require erag/inertia-forms
+php artisan erag:install-inertia-forms
+```
+
+```bash
+npm install @erag/inertia-forms-vue     # Vue
+npm install @erag/inertia-forms-react   # React
+npm install @erag/inertia-forms-svelte  # Svelte
+```
+
 ## Documentation
 
 **[https://erag.in/laravel-inertia-forms/](https://erag.in/laravel-inertia-forms/)**
