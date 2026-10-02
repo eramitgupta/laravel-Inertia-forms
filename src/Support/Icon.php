@@ -128,18 +128,13 @@ final class Icon
     }
 
     /**
-     * The icon set shipped with the package, as name => path `d` value. The
-     * file groups the icons by category for the docs; the groups are merged.
+     * The icon set shipped with the package, as name => path `d` value.
      *
      * @return array<string, string>
      */
     private static function set(): array
     {
-        return self::$set ??= array_merge(...array_values(json_decode(
-            (string) file_get_contents(__DIR__.'/../../resources/icons/icons.json'),
-            true,
-            flags: JSON_THROW_ON_ERROR,
-        )));
+        return self::$set ??= IconSetEnum::paths();
     }
 
     private static function markup(string $svg): string

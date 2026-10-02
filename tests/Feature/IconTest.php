@@ -5,6 +5,7 @@ use Erag\InertiaForms\Fields\Fieldset;
 use Erag\InertiaForms\Fields\Submit;
 use Erag\InertiaForms\Fields\TextInput;
 use Erag\InertiaForms\Support\Icon;
+use Erag\InertiaForms\Support\IconSetEnum;
 
 afterEach(fn () => Icon::flushRegistered());
 
@@ -26,10 +27,19 @@ it('accepts kebab, snake and pascal case names', function () {
 });
 
 it('ships more than 200 icons without overlapping the built-in ones', function () {
-    $set = array_merge(...array_values(json_decode(file_get_contents(__DIR__.'/../../resources/icons/icons.json'), true)));
-
-    expect(array_intersect(array_keys($set), Icon::BUILT_IN))->toBe([])
+    expect(array_intersect(array_keys(IconSetEnum::paths()), Icon::BUILT_IN))->toBe([])
         ->and(count(Icon::names()))->toBeGreaterThan(200);
+});
+
+it('gives every icon in the set a path and a category', function () {
+    foreach (IconSetEnum::cases() as $icon) {
+        expect($icon->path())->toStartWith('M')
+            ->and($icon->category())->not->toBeEmpty();
+    }
+
+    expect(IconSetEnum::grouped())->toHaveKey('People')
+        ->and(array_merge(...array_values(IconSetEnum::grouped())))->toBe(IconSetEnum::paths())
+        ->and(Icon::svg(IconSetEnum::Rocket->value))->toBe('<path d="'.e(IconSetEnum::Rocket->path()).'"/>');
 });
 
 it('keeps the built-in list in sync with the frontend icons', function () {
