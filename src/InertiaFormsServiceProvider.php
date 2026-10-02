@@ -32,10 +32,6 @@ class InertiaFormsServiceProvider extends ServiceProvider
             $this->publishes([
                 __DIR__.'/../config/inertia-forms.php' => config_path('inertia-forms.php'),
             ], 'inertia-forms-config');
-
-            $this->publishes([
-                __DIR__.'/../stubs/inertia-form.stub' => base_path('stubs/inertia-form.stub'),
-            ], 'inertia-forms-stubs');
         }
     }
 }

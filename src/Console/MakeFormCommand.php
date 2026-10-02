@@ -16,9 +16,7 @@ class MakeFormCommand extends GeneratorCommand
 
     protected function getStub(): string
     {
-        $published = $this->laravel->basePath('stubs/inertia-form.stub');
-
-        return file_exists($published) ? $published : __DIR__.'/../../stubs/inertia-form.stub';
+        return __DIR__.'/../../stubs/inertia-form.stub';
     }
 
     protected function getDefaultNamespace($rootNamespace): string
