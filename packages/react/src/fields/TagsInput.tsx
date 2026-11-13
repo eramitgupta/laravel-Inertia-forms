@@ -1,5 +1,6 @@
 import { useRef, useState, type KeyboardEvent } from 'react';
 import { addTags, classes, cx, moveItem, type TagsInputSchema } from '../../../core/src';
+import { useTranslate } from '../i18n';
 import { Icon } from '../Icon';
 import type { FieldComponentProps } from '../types';
 import { usePopover } from '../usePopover';
@@ -17,6 +18,7 @@ export function TagsInput({
     describedBy,
     onChange,
 }: FieldComponentProps<TagsInputSchema>) {
+    const t = useTranslate();
     const { root, panel, open, setOpen, panelClass } = usePopover();
     const input = useRef<HTMLInputElement>(null);
     const [text, setText] = useState('');
@@ -81,7 +83,7 @@ export function TagsInput({
                     <div
                         role="list"
                         className={cx(classes.chips, 'flex-none')}
-                        aria-label={`${field.label} tags`}
+                        aria-label={t('tags_list', { label: field.label })}
                     >
                         {tags.map((tag, index) => (
                             <div
@@ -115,7 +117,7 @@ export function TagsInput({
                                     <button
                                         type="button"
                                         className={classes.chipRemove}
-                                        aria-label={`Remove ${tag}`}
+                                        aria-label={t('tags_remove', { name: tag })}
                                         onClick={(event) => {
                                             event.stopPropagation();
                                             onChange(tags.filter((item) => item !== tag));
@@ -146,7 +148,7 @@ export function TagsInput({
                         value={text}
                         maxLength={field.maxTagLength ?? undefined}
                         placeholder={
-                            tags.length ? '' : (field.placeholder ?? 'Type and press Enter')
+                            tags.length ? '' : (field.placeholder ?? t('tags_placeholder'))
                         }
                         disabled={locked}
                         autoFocus={field.autofocus}
@@ -173,7 +175,7 @@ export function TagsInput({
                     ref={panel as never}
                     id={listId}
                     role="listbox"
-                    aria-label={`${field.label} suggestions`}
+                    aria-label={t('tags_suggestions', { label: field.label })}
                     className={panelClass(classes.comboboxList)}
                 >
                     {suggestions.map((suggestion, index) => (

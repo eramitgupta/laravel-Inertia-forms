@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { classes, slugify, slugSource, type SlugSchema } from '../../../core/src';
 import { useFormContext } from '../context';
+import { useTranslate } from '../i18n';
 import { Icon } from '../Icon';
 import type { FieldComponentProps } from '../types';
 
@@ -17,6 +18,7 @@ export function Slug({
     describedBy,
     onChange,
 }: FieldComponentProps<SlugSchema>) {
+    const t = useTranslate();
     const form = useFormContext();
     const text = typeof value === 'string' || typeof value === 'number' ? String(value) : '';
     const options = {
@@ -71,8 +73,8 @@ export function Slug({
                     <button
                         type="button"
                         className={classes.iconButton}
-                        aria-label={`Regenerate ${field.label}`}
-                        title={`Regenerate ${field.label}`}
+                        aria-label={t('slug_regenerate', { label: field.label })}
+                        title={t('slug_regenerate', { label: field.label })}
                         onClick={() => {
                             setManual(false);
                             if (text !== generated) onChange(generated);

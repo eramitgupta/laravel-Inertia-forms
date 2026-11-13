@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, type KeyboardEvent } from 'react';
 import {
     blockDefaults,
     blockTitle,
+    builderAddLabel,
     builderFieldName,
     builderItems,
     builderValue,
@@ -19,6 +20,7 @@ import {
 } from '../../../core/src';
 import { useFormContext } from '../context';
 import { builtInComponents, FieldRenderer } from '../FieldRenderer';
+import { useTranslate } from '../i18n';
 import { Icon } from '../Icon';
 import type { FieldComponentProps } from '../types';
 import { usePopover } from '../usePopover';
@@ -42,6 +44,7 @@ export function Blocks({
     describedBy,
     onChange,
 }: FieldComponentProps<BlocksSchema>) {
+    const t = useTranslate();
     const form = useFormContext();
     const repeater = isRepeater(field);
     const items = builderItems(field, value);
@@ -61,6 +64,7 @@ export function Blocks({
         field.collapsed ? new Set(uids.current) : new Set(),
     );
 
+    const addLabel = builderAddLabel(field);
     const full = field.maxItems !== null && items.length >= field.maxItems;
     // A Repeater has a single item type, so its add button never opens a menu.
     const hasMenu = !repeater && field.blocks.length > 1;
@@ -176,13 +180,13 @@ export function Blocks({
         >
             {field.collapsible && items.length > 0 && (
                 <button type="button" className={classes.builderCollapseAll} onClick={toggleAll}>
-                    {allCollapsed ? 'Expand all' : 'Collapse all'}
+                    {allCollapsed ? t('collection_expand_all') : t('collection_collapse_all')}
                 </button>
             )}
 
             {items.length === 0 && (
                 <div className={classes.builderEmpty}>
-                    {repeater ? 'No items yet.' : 'No blocks yet.'}
+                    {repeater ? t('repeater_empty') : t('blocks_empty')}
                 </div>
             )}
 
@@ -192,6 +196,7 @@ export function Blocks({
                 const uid = uids.current[index]!;
                 const isCollapsed = field.collapsible && collapsed.has(uid);
                 const bodyId = `${id}-block-${uid}`;
+                const itemName = t('collection_item', { label: block.label, number: index + 1 });
                 const fields = block.fields.filter(
                     (inner) =>
                         inner.component !== 'Submit' && isVisible(inner.visibility, item.data),
@@ -281,7 +286,7 @@ export function Blocks({
                                             type="button"
                                             data-move="up"
                                             className={classes.kvButton}
-                                            aria-label={`Move ${block.label} ${index + 1} up`}
+                                            aria-label={t('collection_move_up', { name: itemName })}
                                             disabled={locked || index === 0}
                                             onClick={() => move(index, -1)}
                                         >
@@ -291,7 +296,9 @@ export function Blocks({
                                             type="button"
                                             data-move="down"
                                             className={classes.kvButton}
-                                            aria-label={`Move ${block.label} ${index + 1} down`}
+                                            aria-label={t('collection_move_down', {
+                                                name: itemName,
+                                            })}
                                             disabled={locked || index === items.length - 1}
                                             onClick={() => move(index, 1)}
                                         >
@@ -303,7 +310,7 @@ export function Blocks({
                                     <button
                                         type="button"
                                         className={classes.kvRemove}
-                                        aria-label={`Delete ${block.label} ${index + 1}`}
+                                        aria-label={t('action_delete_field', { name: itemName })}
                                         disabled={
                                             locked ||
                                             (field.minItems !== null &&
@@ -356,13 +363,13 @@ export function Blocks({
                         onClick={openMenu}
                     >
                         <Icon name="plus" className="size-4" />
-                        {field.addActionLabel}
+                        {addLabel}
                     </button>
                     {hasMenu && menu.open && (
                         <div
                             ref={menu.panel}
                             role="menu"
-                            aria-label={field.addActionLabel}
+                            aria-label={addLabel}
                             className={menu.panelClass(classes.builderMenu)}
                             onKeyDown={menuKeydown}
                         >

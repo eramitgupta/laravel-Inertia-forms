@@ -1,16 +1,26 @@
-import { useLayoutEffect, useRef, useState, type DragEvent, type KeyboardEvent } from 'react';
+import {
+    Fragment,
+    useLayoutEffect,
+    useRef,
+    useState,
+    type DragEvent,
+    type KeyboardEvent,
+} from 'react';
 import {
     addComposerAttachments,
     classes,
     composerAccept,
     composerHasRoom,
+    composerSendLabel,
     composerValue,
     dragHasFiles,
     formatFileSize,
+    translateParts,
     type ComposerSchema,
     type ComposerValue,
 } from '../../../core/src';
 import { useFormContext } from '../context';
+import { useTranslate } from '../i18n';
 import { Icon } from '../Icon';
 import type { FieldComponentProps } from '../types';
 
@@ -23,6 +33,7 @@ export function Composer({
     describedBy,
     onChange,
 }: FieldComponentProps<ComposerSchema>) {
+    const t = useTranslate();
     const processing = useFormContext()?.processing ?? false;
     const textarea = useRef<HTMLTextAreaElement>(null);
     const fileInput = useRef<HTMLInputElement>(null);
@@ -95,7 +106,11 @@ export function Composer({
     return (
         <div className={classes.composer}>
             {field.quickReplies.length > 0 && (
-                <div role="group" aria-label="Quick replies" className={classes.composerReplies}>
+                <div
+                    role="group"
+                    aria-label={t('composer_quick_replies')}
+                    className={classes.composerReplies}
+                >
                     {field.quickReplies.map((reply, index) => (
                         <button
                             key={`${reply}-${index}`}
@@ -139,7 +154,11 @@ export function Composer({
                     onKeyDown={keyDown}
                 />
                 {current.attachments.length > 0 && (
-                    <div role="list" aria-label="Attachments" className={classes.composerFiles}>
+                    <div
+                        role="list"
+                        aria-label={t('composer_attachments')}
+                        className={classes.composerFiles}
+                    >
                         {current.attachments.map((file, index) => (
                             <div
                                 role="listitem"
@@ -164,7 +183,9 @@ export function Composer({
                                     <button
                                         type="button"
                                         className={classes.composerFileRemove}
-                                        aria-label={`Remove ${file.name}`}
+                                        aria-label={t('composer_remove_attachment', {
+                                            name: file.name,
+                                        })}
                                         onClick={() => removeFile(index)}
                                     >
                                         <Icon name="x" className={classes.composerRemoveIcon} />
@@ -180,8 +201,8 @@ export function Composer({
                             <button
                                 type="button"
                                 className={classes.composerAttach}
-                                title="Attach files"
-                                aria-label="Attach files"
+                                title={t('composer_attach')}
+                                aria-label={t('composer_attach')}
                                 aria-controls={`${id}-files`}
                                 disabled={!canAttach}
                                 onClick={() => fileInput.current?.click()}
@@ -209,7 +230,10 @@ export function Composer({
                     <div className={classes.composerActions}>
                         {field.maxLength !== null && (
                             <span className={classes.composerCounter}>
-                                {`${current.message.length} / ${field.maxLength}`}
+                                {t('form_character_count', {
+                                    count: current.message.length,
+                                    max: field.maxLength,
+                                })}
                             </span>
                         )}
                         <button
@@ -219,7 +243,7 @@ export function Composer({
                             disabled={locked || processing}
                             aria-busy={processing || undefined}
                         >
-                            {field.sendLabel}
+                            {composerSendLabel(field)}
                             {processing ? (
                                 <span className={classes.spinner} aria-hidden="true" />
                             ) : (
@@ -231,8 +255,19 @@ export function Composer({
             </div>
             {showHint && (
                 <p id={hintId} className={classes.composerHint}>
-                    Press <kbd className={classes.composerKbd}>Enter</kbd> to send,{' '}
-                    <kbd className={classes.composerKbd}>Shift + Enter</kbd> for new line
+                    {translateParts('composer_hint', ['enter', 'newline']).map((part, index) =>
+                        typeof part === 'string' ? (
+                            <Fragment key={index}>{part}</Fragment>
+                        ) : (
+                            <kbd key={index} className={classes.composerKbd}>
+                                {t(
+                                    part.slot === 'enter'
+                                        ? 'composer_key_enter'
+                                        : 'composer_key_newline',
+                                )}
+                            </kbd>
+                        ),
+                    )}
                 </p>
             )}
         </div>

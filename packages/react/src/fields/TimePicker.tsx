@@ -1,5 +1,6 @@
 import { useRef } from 'react';
 import { classes, nowTime, type TimePickerSchema } from '../../../core/src';
+import { useTranslate } from '../i18n';
 import { Icon } from '../Icon';
 import type { FieldComponentProps } from '../types';
 import { usePopover } from '../usePopover';
@@ -20,6 +21,7 @@ export function TimePicker({
     describedBy,
     onChange,
 }: FieldComponentProps<TimePickerSchema>) {
+    const t = useTranslate();
     const { root, panel, open, setOpen, panelClass } = usePopover();
     const locked = disabled || field.readonly;
     const time = typeof value === 'string' ? value : '';
@@ -98,7 +100,7 @@ export function TimePicker({
                                 setOpen(false);
                             }}
                         >
-                            Now
+                            {t('time_now')}
                         </button>
                         <button
                             type="button"
@@ -108,7 +110,7 @@ export function TimePicker({
                                 setOpen(false);
                             }}
                         >
-                            Clear
+                            {t('action_clear')}
                         </button>
                     </div>
                 </div>

@@ -6,12 +6,13 @@ import {
     type LinkParts,
     type LinkSchema,
 } from '../../../core/src';
+import { useTranslate } from '../i18n';
 import { Icon } from '../Icon';
 import type { FieldComponentProps } from '../types';
 
 const TARGETS = [
-    { value: '_self', label: 'Same tab' },
-    { value: '_blank', label: 'New tab' },
+    { value: '_self', label: 'link_same_tab' },
+    { value: '_blank', label: 'link_new_tab' },
 ] as const;
 
 /**
@@ -27,6 +28,7 @@ export function Link({
     describedBy,
     onChange,
 }: FieldComponentProps<LinkSchema>) {
+    const t = useTranslate();
     const parts = linkParts(value);
     const hint = linkSchemeHint(field, parts.url);
     const hintId = `${id}-hint`;
@@ -50,7 +52,7 @@ export function Link({
                     inputMode="url"
                     autoComplete="url"
                     value={parts.url}
-                    placeholder={field.placeholder ?? 'https://example.com'}
+                    placeholder={field.placeholder ?? t('link_url_placeholder')}
                     required={field.required}
                     disabled={disabled}
                     readOnly={field.readonly}
@@ -74,10 +76,10 @@ export function Link({
                                 name={`${field.name}[label]`}
                                 type="text"
                                 value={parts.label}
-                                placeholder={field.labelPlaceholder ?? 'Link text'}
+                                placeholder={field.labelPlaceholder ?? t('link_text_placeholder')}
                                 disabled={disabled}
                                 readOnly={field.readonly}
-                                aria-label={`${field.label} text`}
+                                aria-label={t('link_text_label', { label: field.label })}
                                 aria-invalid={error ? true : undefined}
                                 className={classes.input}
                                 onChange={(event) => update({ label: event.target.value })}
@@ -87,7 +89,7 @@ export function Link({
                     {field.withTarget && (
                         <div
                             role="radiogroup"
-                            aria-label={`Open ${field.label} in`}
+                            aria-label={t('link_target_label', { label: field.label })}
                             className={classes.segmented}
                         >
                             {TARGETS.map((target) => (
@@ -106,7 +108,7 @@ export function Link({
                                         className={classes.visuallyHidden}
                                         onChange={() => update({ target: target.value })}
                                     />
-                                    {target.label}
+                                    {t(target.label)}
                                 </label>
                             ))}
                         </div>

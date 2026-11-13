@@ -29,6 +29,22 @@ export { TextInput } from './fields/TextInput';
 export { TimePicker } from './fields/TimePicker';
 export { Toggle } from './fields/Toggle';
 export { isVisible } from '../../core/src/visibility';
+export {
+    defaultTranslations,
+    getTranslations,
+    resetTranslations,
+    setTranslations,
+    subscribeTranslations,
+    translate,
+    translateParts,
+    translationsVersion,
+    type TranslationKey,
+    type TranslationParams,
+    type TranslationPart,
+    type Translations,
+    type TranslationValue,
+} from '../../core/src/i18n';
+export { useTranslate } from './i18n';
 export type { BeforeSubmitHelpers, FieldComponent, FieldComponentProps, FormProps } from './types';
 export type {
     FieldOption,

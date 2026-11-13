@@ -2,11 +2,13 @@ import { useRef, useState } from 'react';
 import {
     classes,
     cx,
+    keyValueLabels,
     keyValueRows,
     moveItem,
     type KeyValueRow,
     type KeyValueSchema,
 } from '../../../core/src';
+import { useTranslate } from '../i18n';
 import { Icon } from '../Icon';
 import type { FieldComponentProps } from '../types';
 
@@ -23,6 +25,8 @@ export function KeyValue({
     describedBy,
     onChange,
 }: FieldComponentProps<KeyValueSchema>) {
+    const t = useTranslate();
+    const labels = keyValueLabels(field);
     const rows = keyValueRows(value);
     const locked = disabled || field.readonly;
     const [dragIndex, setDragIndex] = useState<number | null>(null);
@@ -76,107 +80,116 @@ export function KeyValue({
             >
                 <div className={cx(grid, classes.kvHeader)} aria-hidden="true">
                     {field.reorderable && <span className="w-[5.5rem]" />}
-                    <span>{field.keyLabel}</span>
-                    <span>{field.valueLabel}</span>
+                    <span>{labels.key}</span>
+                    <span>{labels.value}</span>
                     <span className="w-7" />
                 </div>
-                {rows.length === 0 && <div className={classes.kvEmpty}>No entries yet.</div>}
-                {rows.map((row, index) => (
-                    <div
-                        key={index}
-                        data-row={index}
-                        data-dragging={dragIndex === index || undefined}
-                        className={cx(grid, classes.kvRow)}
-                        onDragOver={(event) => {
-                            if (dragIndex === null) return;
-                            event.preventDefault();
-                            if (dragIndex !== index) {
-                                update(moveItem(rows, dragIndex, index));
-                                setDragIndex(index);
-                            }
-                        }}
-                        onDrop={(event) => event.preventDefault()}
-                    >
-                        {field.reorderable && (
-                            <div className={classes.kvControls}>
-                                <span
-                                    className={classes.kvHandle}
-                                    draggable={!locked}
-                                    aria-hidden="true"
-                                    onDragStart={(event) => {
-                                        setDragIndex(index);
-                                        event.dataTransfer.effectAllowed = 'move';
-                                        event.dataTransfer.setData('text/plain', String(index));
-                                        const rowElement =
-                                            event.currentTarget.closest('[data-row]');
-                                        if (rowElement)
-                                            event.dataTransfer.setDragImage(rowElement, 16, 16);
-                                    }}
-                                    onDragEnd={() => setDragIndex(null)}
-                                >
-                                    <Icon name="grip" className="size-4" />
-                                </span>
+                {rows.length === 0 && <div className={classes.kvEmpty}>{t('key_value_empty')}</div>}
+                {rows.map((row, index) => {
+                    const rowName = t('key_value_row', { number: index + 1 });
+                    return (
+                        <div
+                            key={index}
+                            data-row={index}
+                            data-dragging={dragIndex === index || undefined}
+                            className={cx(grid, classes.kvRow)}
+                            onDragOver={(event) => {
+                                if (dragIndex === null) return;
+                                event.preventDefault();
+                                if (dragIndex !== index) {
+                                    update(moveItem(rows, dragIndex, index));
+                                    setDragIndex(index);
+                                }
+                            }}
+                            onDrop={(event) => event.preventDefault()}
+                        >
+                            {field.reorderable && (
+                                <div className={classes.kvControls}>
+                                    <span
+                                        className={classes.kvHandle}
+                                        draggable={!locked}
+                                        aria-hidden="true"
+                                        onDragStart={(event) => {
+                                            setDragIndex(index);
+                                            event.dataTransfer.effectAllowed = 'move';
+                                            event.dataTransfer.setData('text/plain', String(index));
+                                            const rowElement =
+                                                event.currentTarget.closest('[data-row]');
+                                            if (rowElement)
+                                                event.dataTransfer.setDragImage(rowElement, 16, 16);
+                                        }}
+                                        onDragEnd={() => setDragIndex(null)}
+                                    >
+                                        <Icon name="grip" className="size-4" />
+                                    </span>
+                                    <button
+                                        type="button"
+                                        data-move="up"
+                                        className={classes.kvButton}
+                                        aria-label={t('collection_move_up', { name: rowName })}
+                                        disabled={locked || index === 0}
+                                        onClick={() => move(index, -1)}
+                                    >
+                                        <Icon name="chevronUp" className="size-4" />
+                                    </button>
+                                    <button
+                                        type="button"
+                                        data-move="down"
+                                        className={classes.kvButton}
+                                        aria-label={t('collection_move_down', { name: rowName })}
+                                        disabled={locked || index === rows.length - 1}
+                                        onClick={() => move(index, 1)}
+                                    >
+                                        <Icon name="chevronDown" className="size-4" />
+                                    </button>
+                                </div>
+                            )}
+                            <input
+                                type="text"
+                                data-part="key"
+                                value={row.key}
+                                placeholder={field.keyPlaceholder ?? undefined}
+                                aria-label={t('key_value_cell', {
+                                    label: labels.key,
+                                    number: index + 1,
+                                })}
+                                aria-invalid={error ? true : undefined}
+                                disabled={disabled}
+                                readOnly={field.readonly || !field.editableKeys}
+                                className={classes.input}
+                                onChange={(event) => edit(index, 'key', event.target.value)}
+                            />
+                            <input
+                                type="text"
+                                data-part="value"
+                                value={row.value}
+                                placeholder={field.valuePlaceholder ?? undefined}
+                                aria-label={t('key_value_cell', {
+                                    label: labels.value,
+                                    number: index + 1,
+                                })}
+                                aria-invalid={error ? true : undefined}
+                                disabled={disabled}
+                                readOnly={field.readonly}
+                                className={classes.input}
+                                onChange={(event) => edit(index, 'value', event.target.value)}
+                            />
+                            {field.deletable ? (
                                 <button
                                     type="button"
-                                    data-move="up"
-                                    className={classes.kvButton}
-                                    aria-label={`Move row ${index + 1} up`}
-                                    disabled={locked || index === 0}
-                                    onClick={() => move(index, -1)}
+                                    className={classes.kvRemove}
+                                    aria-label={t('action_delete_field', { name: rowName })}
+                                    disabled={locked}
+                                    onClick={() => remove(index)}
                                 >
-                                    <Icon name="chevronUp" className="size-4" />
+                                    <Icon name="x" className="size-4" />
                                 </button>
-                                <button
-                                    type="button"
-                                    data-move="down"
-                                    className={classes.kvButton}
-                                    aria-label={`Move row ${index + 1} down`}
-                                    disabled={locked || index === rows.length - 1}
-                                    onClick={() => move(index, 1)}
-                                >
-                                    <Icon name="chevronDown" className="size-4" />
-                                </button>
-                            </div>
-                        )}
-                        <input
-                            type="text"
-                            data-part="key"
-                            value={row.key}
-                            placeholder={field.keyPlaceholder ?? undefined}
-                            aria-label={`${field.keyLabel} ${index + 1}`}
-                            aria-invalid={error ? true : undefined}
-                            disabled={disabled}
-                            readOnly={field.readonly || !field.editableKeys}
-                            className={classes.input}
-                            onChange={(event) => edit(index, 'key', event.target.value)}
-                        />
-                        <input
-                            type="text"
-                            data-part="value"
-                            value={row.value}
-                            placeholder={field.valuePlaceholder ?? undefined}
-                            aria-label={`${field.valueLabel} ${index + 1}`}
-                            aria-invalid={error ? true : undefined}
-                            disabled={disabled}
-                            readOnly={field.readonly}
-                            className={classes.input}
-                            onChange={(event) => edit(index, 'value', event.target.value)}
-                        />
-                        {field.deletable ? (
-                            <button
-                                type="button"
-                                className={classes.kvRemove}
-                                aria-label={`Remove row ${index + 1}`}
-                                disabled={locked}
-                                onClick={() => remove(index)}
-                            >
-                                <Icon name="x" className="size-4" />
-                            </button>
-                        ) : (
-                            <span className="w-7" />
-                        )}
-                    </div>
-                ))}
+                            ) : (
+                                <span className="w-7" />
+                            )}
+                        </div>
+                    );
+                })}
             </div>
             {field.addable && (
                 <button
@@ -186,7 +199,7 @@ export function KeyValue({
                     onClick={add}
                 >
                     <Icon name="plus" className="size-4" />
-                    {field.addActionLabel}
+                    {labels.add}
                 </button>
             )}
         </div>

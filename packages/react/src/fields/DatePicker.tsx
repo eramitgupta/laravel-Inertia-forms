@@ -10,6 +10,7 @@ import {
     type DatePickerSchema,
     type DateRangeValue,
 } from '../../../core/src';
+import { useTranslate } from '../i18n';
 import { Icon } from '../Icon';
 import type { FieldComponentProps } from '../types';
 import { usePopover } from '../usePopover';
@@ -38,6 +39,7 @@ export function DatePicker({
     describedBy,
     onChange,
 }: FieldComponentProps<DatePickerSchema>) {
+    const t = useTranslate();
     const { root, panel, open, setOpen, panelClass } = usePopover();
     const [view, setView] = useState(() =>
         monthStart(field.range ? toRange(value).start : (value as string)),
@@ -50,10 +52,14 @@ export function DatePicker({
 
     const display = field.range
         ? range.start
-            ? `${formatDisplayDate(range.start)} – ${range.end ? formatDisplayDate(range.end) : '…'}`
+            ? t('date_range', {
+                  start: formatDisplayDate(range.start),
+                  end: range.end ? formatDisplayDate(range.end) : '…',
+              })
             : ''
         : formatDisplayDate(single);
-    const placeholder = field.placeholder ?? (field.range ? 'Select dates' : 'Select a date');
+    const placeholder =
+        field.placeholder ?? t(field.range ? 'date_range_placeholder' : 'date_placeholder');
 
     function toggle() {
         if (locked) return;
@@ -157,10 +163,10 @@ export function DatePicker({
                                 if (!field.range) select(todayIso());
                             }}
                         >
-                            Today
+                            {t('date_today')}
                         </button>
                         <button type="button" className={classes.popoverAction} onClick={clear}>
-                            Clear
+                            {t('action_clear')}
                         </button>
                     </div>
                 </div>

@@ -1,0 +1,59 @@
+name: Publish npm packages
+
+# Publishes @erag/inertia-forms-react, -vue and -svelte to npm with Trusted
+# Publishing (OpenID Connect): no npm token is stored in GitHub. Each package is
+# connected to this repository and this workflow file on npmjs.com.
+#
+# Runs when a GitHub release is published, or by hand from the Actions tab.
+# A package is only published when its package.json version is not on npm yet,
+# so bump the version of the packages you want to release first.
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write # lets npm verify this run (OIDC) and sign provenance
+
+concurrency:
+  group: npm-publish
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+          cache: npm
+
+      # Trusted publishing needs npm 11.5.1 or newer.
+      - run: npm install --global npm@latest
+
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+
+      - name: Publish packages that have a new version
+        run: |
+          set -euo pipefail
+
+          for dir in packages/react packages/vue packages/svelte; do
+            name=$(node -p "require('./$dir/package.json').name")
+            version=$(node -p "require('./$dir/package.json').version")
+
+            if npm view "$name@$version" version >/dev/null 2>&1; then
+              echo "::notice::$name@$version is already on npm, skipping."
+              continue
+            fi
+
+            echo "Publishing $name@$version"
+            npm publish --workspace "$dir" --access public --provenance
+          done

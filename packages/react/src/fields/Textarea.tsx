@@ -1,5 +1,6 @@
 import { useLayoutEffect, useRef } from 'react';
 import { classes, cx, type TextareaSchema } from '../../../core/src';
+import { useTranslate } from '../i18n';
 import type { FieldComponentProps } from '../types';
 
 export function Textarea({
@@ -11,6 +12,7 @@ export function Textarea({
     describedBy,
     onChange,
 }: FieldComponentProps<TextareaSchema>) {
+    const t = useTranslate();
     const textarea = useRef<HTMLTextAreaElement>(null);
     const text = value === null || value === undefined ? '' : String(value);
 
@@ -47,8 +49,9 @@ export function Textarea({
             />
             {field.showCharacterCount && (
                 <p className={classes.counter}>
-                    {text.length}
-                    {field.maxLength ? ` / ${field.maxLength}` : ''}
+                    {field.maxLength
+                        ? t('form_character_count', { count: text.length, max: field.maxLength })
+                        : text.length}
                 </p>
             )}
         </>

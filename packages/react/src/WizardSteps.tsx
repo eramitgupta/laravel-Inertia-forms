@@ -2,11 +2,13 @@ import {
     classes,
     wizardCircleClass,
     wizardProgress,
+    wizardProgressText,
     wizardStepIcon,
     wizardStepLabel,
     wizardStepState,
     type FieldsetSchema,
 } from '../../core/src';
+import { useTranslate } from './i18n';
 import { Icon } from './Icon';
 
 interface WizardStepsProps {
@@ -21,14 +23,15 @@ interface WizardStepsProps {
  * narrow screens only show the current step.
  */
 export function WizardSteps({ steps, current, onSelect }: WizardStepsProps) {
+    const t = useTranslate();
     const currentStep = steps[current];
 
     return (
-        <nav aria-label="Progress" className={classes.wizardNav}>
+        <nav aria-label={t('wizard_progress_label')} className={classes.wizardNav}>
             {currentStep && (
                 <div className={classes.wizardCompact}>
                     <p className={classes.wizardCompactCount}>
-                        {`Step ${current + 1} of ${steps.length}`}
+                        {wizardProgressText(current, steps.length)}
                     </p>
                     <p className={classes.wizardCompactTitle}>
                         {wizardStepLabel(currentStep, current)}

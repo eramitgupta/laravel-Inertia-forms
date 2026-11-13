@@ -8,6 +8,7 @@ import {
     typedOtp,
     type OtpInputSchema,
 } from '../../../core/src';
+import { useTranslate } from '../i18n';
 import type { FieldComponentProps } from '../types';
 
 /**
@@ -23,6 +24,7 @@ export function OtpInput({
     describedBy,
     onChange,
 }: FieldComponentProps<OtpInputSchema>) {
+    const t = useTranslate();
     const length = field.length;
     const code = cleanOtp(value, field.alphanumeric).slice(0, length);
     const locked = disabled || field.readonly;
@@ -31,7 +33,6 @@ export function OtpInput({
     // The code as last typed, so focus handlers see it before the parent re-renders.
     const latest = useRef(code);
     latest.current = code;
-    const noun = field.alphanumeric ? 'Character' : 'Digit';
 
     useEffect(() => {
         if (!submitWhenComplete.current || code.length < length) return;
@@ -120,7 +121,10 @@ export function OtpInput({
                         disabled={disabled}
                         readOnly={field.readonly}
                         autoFocus={field.autofocus && index === 0}
-                        aria-label={`${noun} ${index + 1} of ${length}`}
+                        aria-label={t(field.alphanumeric ? 'otp_character' : 'otp_digit', {
+                            number: index + 1,
+                            total: length,
+                        })}
                         aria-invalid={error ? true : undefined}
                         className={classes.otpBox}
                         onFocus={() =>

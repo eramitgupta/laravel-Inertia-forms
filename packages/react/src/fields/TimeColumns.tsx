@@ -9,6 +9,7 @@ import {
     secondOptions,
     type TimeParts,
 } from '../../../core/src';
+import { useTranslate } from '../i18n';
 
 interface TimeColumnsProps {
     id: string;
@@ -36,13 +37,14 @@ export function TimeColumns({
     maxTime,
     onChange,
 }: TimeColumnsProps) {
+    const t = useTranslate();
     const root = useRef<HTMLDivElement>(null);
     const parts = parseTime(value);
     const columns: Array<{ part: Part; title: string; options: string[] }> = [
-        { part: 'hour', title: 'Hour', options: hourOptions() },
-        { part: 'minute', title: 'Min', options: minuteOptions(minuteStep) },
+        { part: 'hour', title: t('time_hour'), options: hourOptions() },
+        { part: 'minute', title: t('time_minute'), options: minuteOptions(minuteStep) },
         ...(withSeconds
-            ? [{ part: 'second' as const, title: 'Sec', options: secondOptions() }]
+            ? [{ part: 'second' as const, title: t('time_second'), options: secondOptions() }]
             : []),
     ];
 

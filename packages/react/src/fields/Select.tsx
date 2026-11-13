@@ -9,6 +9,7 @@ import {
     type FieldOption,
     type SelectSchema,
 } from '../../../core/src';
+import { useTranslate } from '../i18n';
 import { Icon } from '../Icon';
 import type { FieldComponentProps } from '../types';
 import { usePopover } from '../usePopover';
@@ -28,6 +29,7 @@ export function Select({
     describedBy,
     onChange,
 }: FieldComponentProps<SelectSchema>) {
+    const t = useTranslate();
     const { root, panel, open, setOpen, panelClass } = usePopover();
     const control = useRef<HTMLInputElement & HTMLButtonElement>(null);
     const [query, setQuery] = useState('');
@@ -85,7 +87,8 @@ export function Select({
             controller.abort();
         };
     }, [open, query, remote?.url, remote?.token, remote?.field]);
-    const placeholder = field.placeholder ?? (field.searchable ? 'Search…' : 'Select an option');
+    const placeholder =
+        field.placeholder ?? t(field.searchable ? 'option_search' : 'option_placeholder');
     const singleLabel = !field.multiple ? (selected[0]?.label ?? '') : '';
 
     function show() {
@@ -210,7 +213,7 @@ export function Select({
                                     <button
                                         type="button"
                                         className={classes.chipRemove}
-                                        aria-label={`Remove ${option.label}`}
+                                        aria-label={t('option_remove', { name: option.label })}
                                         onClick={(event) => {
                                             event.stopPropagation();
                                             choose(option);
@@ -259,7 +262,9 @@ export function Select({
                         {selected.length === 0 ? (
                             <span className={classes.triggerPlaceholder}>{placeholder}</span>
                         ) : field.multiple ? (
-                            <span className="sr-only">{`${selected.length} selected`}</span>
+                            <span className="sr-only">
+                                {t('option_selected_count', { count: selected.length })}
+                            </span>
                         ) : (
                             <span className={classes.triggerValue}>{singleLabel}</span>
                         )}
@@ -281,7 +286,7 @@ export function Select({
                 >
                     {filtered.length === 0 && (
                         <div className={classes.comboboxEmpty}>
-                            {loading ? 'Searching…' : 'No results'}
+                            {loading ? t('option_searching') : t('option_no_results')}
                         </div>
                     )}
                     {filtered.map((option, index) => {

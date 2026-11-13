@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, type KeyboardEvent } from 'react';
 import {
     addMonths,
+    calendarDayLabel,
     classes,
     isOutsideLimits,
     monthGrid,
@@ -11,6 +12,7 @@ import {
     toIsoDate,
     weekdayLabels,
 } from '../../../core/src';
+import { useTranslate } from '../i18n';
 import { Icon } from '../Icon';
 
 interface CalendarProps {
@@ -48,6 +50,7 @@ export function Calendar(props: CalendarProps) {
         onSelect,
         onHover,
     } = props;
+    const t = useTranslate();
     const root = useRef<HTMLDivElement>(null);
     const [focusIso, setFocusIso] = useState<string | null>(null);
     const today = todayIso();
@@ -114,7 +117,7 @@ export function Calendar(props: CalendarProps) {
                     <button
                         type="button"
                         className={classes.calendarNav}
-                        aria-label="Previous year"
+                        aria-label={t('calendar_previous_year')}
                         onClick={() => onView(addMonths(view, -12))}
                     >
                         <Icon name="chevronsLeft" className="size-4" />
@@ -122,7 +125,7 @@ export function Calendar(props: CalendarProps) {
                     <button
                         type="button"
                         className={classes.calendarNav}
-                        aria-label="Previous month"
+                        aria-label={t('calendar_previous_month')}
                         onClick={() => onView(addMonths(view, -1))}
                     >
                         <Icon name="chevronLeft" className="size-4" />
@@ -137,7 +140,7 @@ export function Calendar(props: CalendarProps) {
                     <button
                         type="button"
                         className={classes.calendarNav}
-                        aria-label="Next month"
+                        aria-label={t('calendar_next_month')}
                         onClick={() => onView(addMonths(view, 1))}
                     >
                         <Icon name="chevronRight" className="size-4" />
@@ -145,7 +148,7 @@ export function Calendar(props: CalendarProps) {
                     <button
                         type="button"
                         className={classes.calendarNav}
-                        aria-label="Next year"
+                        aria-label={t('calendar_next_year')}
                         onClick={() => onView(addMonths(view, 12))}
                     >
                         <Icon name="chevronsRight" className="size-4" />
@@ -184,7 +187,7 @@ export function Calendar(props: CalendarProps) {
                                             undefined
                                         }
                                         aria-pressed={selected}
-                                        aria-label={parseIsoDate(day.iso)!.toDateString()}
+                                        aria-label={calendarDayLabel(day.iso)}
                                         tabIndex={tabbable ? 0 : -1}
                                         disabled={isOutsideLimits(day.iso, minDate, maxDate)}
                                         className={classes.calendarDay}

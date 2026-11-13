@@ -10,6 +10,7 @@ import {
     type ColorPickerSchema,
     type Hsl,
 } from '../../../core/src';
+import { useTranslate } from '../i18n';
 import { Icon } from '../Icon';
 import type { FieldComponentProps } from '../types';
 import { usePopover } from '../usePopover';
@@ -32,6 +33,7 @@ export function ColorPicker({
     describedBy,
     onChange,
 }: FieldComponentProps<ColorPickerSchema>) {
+    const t = useTranslate();
     const { root, panel, open, setOpen, panelClass } = usePopover();
     const color = typeof value === 'string' ? value : '';
     const hex = normalizeHex(color);
@@ -68,9 +70,9 @@ export function ColorPicker({
     }
 
     const sliders: Array<{ key: keyof Hsl; label: string; max: number; background: string }> = [
-        { key: 'h', label: 'Hue', max: 360, background: hueGradient },
-        { key: 's', label: 'Saturation', max: 100, background: saturationGradient(hsl) },
-        { key: 'l', label: 'Lightness', max: 100, background: lightnessGradient(hsl) },
+        { key: 'h', label: t('color_hue'), max: 360, background: hueGradient },
+        { key: 's', label: t('color_saturation'), max: 100, background: saturationGradient(hsl) },
+        { key: 'l', label: t('color_lightness'), max: 100, background: lightnessGradient(hsl) },
     ];
 
     return (
@@ -106,7 +108,7 @@ export function ColorPicker({
                                 : classes.triggerPlaceholder
                         }
                     >
-                        {color || field.placeholder || 'Pick a color'}
+                        {color || field.placeholder || t('color_placeholder')}
                     </span>
                 </button>
                 {field.clearable && color && !locked && (
@@ -163,7 +165,7 @@ export function ColorPicker({
                                 placeholder="#000000"
                                 maxLength={7}
                                 spellCheck={false}
-                                aria-label={`${field.label} hex code`}
+                                aria-label={t('color_hex_code', { label: field.label })}
                                 className={classes.colorHex}
                                 onChange={(event) => {
                                     setText(event.target.value);
@@ -180,7 +182,7 @@ export function ColorPicker({
                                 <button
                                     type="button"
                                     className={classes.colorTool}
-                                    aria-label="Pick a color from the screen"
+                                    aria-label={t('color_eyedropper')}
                                     onClick={() => {
                                         new eyeDropper()
                                             .open()
@@ -194,7 +196,7 @@ export function ColorPicker({
                             <button
                                 type="button"
                                 className={classes.colorTool}
-                                aria-label={copied ? 'Copied' : 'Copy hex code'}
+                                aria-label={copied ? t('action_copied') : t('color_copy_hex')}
                                 disabled={!hex}
                                 onClick={() => {
                                     if (!hex) return;

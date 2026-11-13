@@ -1,11 +1,13 @@
-import { useEffect, useMemo, useRef, useState, type DragEvent } from 'react';
+import { Fragment, useEffect, useMemo, useRef, useState, type DragEvent } from 'react';
 import {
     classes,
     cx,
     fileUploadHint,
+    translateParts,
     formatFileSize,
     type FileUploadSchema,
 } from '../../../core/src';
+import { useTranslate } from '../i18n';
 import { Icon } from '../Icon';
 import type { FieldComponentProps } from '../types';
 
@@ -18,6 +20,7 @@ export function FileUpload({
     describedBy,
     onChange,
 }: FieldComponentProps<FileUploadSchema>) {
+    const t = useTranslate();
     const input = useRef<HTMLInputElement>(null);
     const [dragging, setDragging] = useState(false);
     const files = useMemo(
@@ -87,12 +90,16 @@ export function FileUpload({
             >
                 <Icon name="upload" className={classes.dropzoneIcon} />
                 <span className={classes.dropzoneTitle}>
-                    {field.placeholder ?? (
-                        <>
-                            <span className={classes.dropzoneLink}>Click to upload</span> or drag
-                            and drop
-                        </>
-                    )}
+                    {field.placeholder ??
+                        translateParts('file_upload_drop_prompt', ['action']).map((part, index) =>
+                            typeof part === 'string' ? (
+                                <Fragment key={index}>{part}</Fragment>
+                            ) : (
+                                <span key={index} className={classes.dropzoneLink}>
+                                    {t('file_upload_click_to_upload')}
+                                </span>
+                            ),
+                        )}
                 </span>
                 {hint && <span className={classes.dropzoneHint}>{hint}</span>}
             </div>
@@ -131,7 +138,7 @@ export function FileUpload({
                                     className={classes.fileRemove}
                                     onClick={() => remove(index)}
                                 >
-                                    Remove
+                                    {t('action_remove')}
                                 </button>
                             )}
                         </div>

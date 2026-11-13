@@ -27,6 +27,8 @@ import {
     submitButtonClass,
     submitIntent,
     validateWizardStep,
+    wizardBackLabel,
+    wizardNextLabel,
     visibleFields,
     wizardStepErrorKeys,
     wizardStepFields,
@@ -38,6 +40,7 @@ import {
     mergeComponents,
 } from '../../core/src';
 import { FormContext, type FormContextValue } from './context';
+import { useTranslate } from './i18n';
 import { builtInComponents, FieldRenderer } from './FieldRenderer';
 import { SubmitButton } from './fields/SubmitButton';
 import { Icon } from './Icon';
@@ -62,6 +65,8 @@ export function Form({
     onError,
     onFinish,
 }: FormProps) {
+    // Re-render the whole form when the translations change.
+    const t = useTranslate();
     const formId = `erag-form-${useId().replace(/[^a-zA-Z0-9]/g, '')}`;
     const root = useRef<HTMLFormElement>(null);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Inertia's form data type requires `any` values.
@@ -321,7 +326,7 @@ export function Form({
                             onClick={() => goToStep(currentStep - 1)}
                         >
                             <Icon name="chevronLeft" className={classes.submitIcon} />
-                            {wizard.backLabel}
+                            {wizardBackLabel(wizard)}
                         </button>
                     )}
                     <div className={classes.wizardActions}>
@@ -335,7 +340,7 @@ export function Form({
                                 {checkingStep && (
                                     <span className={classes.submitSpinner} aria-hidden="true" />
                                 )}
-                                {wizard.nextLabel}
+                                {wizardNextLabel(wizard)}
                                 {!checkingStep && (
                                     <Icon name="chevronRight" className={classes.submitIcon} />
                                 )}
@@ -344,7 +349,10 @@ export function Form({
                             submitFields.map((field) => renderField(field, 1))
                         ) : (
                             !hasSubmitField(schema) && (
-                                <SubmitButton label="Submit" processing={inertia.processing} />
+                                <SubmitButton
+                                    label={t('form_submit')}
+                                    processing={inertia.processing}
+                                />
                             )
                         )}
                     </div>
@@ -382,7 +390,10 @@ export function Form({
                             )}
                             {extra}
                             {!hasSubmitField(schema) && (
-                                <SubmitButton label="Submit" processing={inertia.processing} />
+                                <SubmitButton
+                                    label={t('form_submit')}
+                                    processing={inertia.processing}
+                                />
                             )}
                         </>
                     )}
