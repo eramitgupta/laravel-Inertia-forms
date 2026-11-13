@@ -1,6 +1,6 @@
 {
     "name": "@erag/inertia-forms-svelte",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "description": "Svelte renderer for erag/inertia-forms. Render Laravel-defined forms with one <Form> component.",
     "type": "module",
     "license": "MIT",
