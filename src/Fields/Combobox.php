@@ -193,7 +193,7 @@ class Combobox extends Field
             $known = array_map(fn (array $option): string => (string) $option['value'], $this->getSelectedOptions([$value]));
 
             if (! in_array((string) $value, $known, true)) {
-                $fail('The selected :attribute is invalid.');
+                $fail(__('inertia-forms::inertia-forms.fields.combobox.invalid'));
             }
         };
     }

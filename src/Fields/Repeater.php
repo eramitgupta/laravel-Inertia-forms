@@ -82,7 +82,7 @@ class Repeater extends Blocks
     protected function item(): Block
     {
         if (! isset($this->item)) {
-            $this->item = Block::make('item')->label('Item');
+            $this->item = Block::make('item')->label(__('inertia-forms::inertia-forms.fields.repeater.item'));
             $this->blocks = [$this->item];
         }
 
@@ -121,7 +121,8 @@ class Repeater extends Blocks
         return [
             ...parent::props(),
             'blocks' => [$this->item()->toArray()],
-            'addActionLabel' => $this->addActionLabel ?? 'Add '.strtolower($this->item()->getLabel()),
+            // Without a label the frontend shows its translated `repeater_add` ("Add link").
+            'addActionLabel' => $this->addActionLabel,
         ];
     }
 }

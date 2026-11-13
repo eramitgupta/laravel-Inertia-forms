@@ -11,9 +11,11 @@ use Closure;
  */
 class KeyValue extends Field
 {
-    protected string $keyLabel = 'Key';
+    /** `null` lets the frontend translate its default heading ("Key"). */
+    protected ?string $keyLabel = null;
 
-    protected string $valueLabel = 'Value';
+    /** `null` lets the frontend translate its default heading ("Value"). */
+    protected ?string $valueLabel = null;
 
     protected ?string $keyPlaceholder = null;
 
@@ -43,14 +45,14 @@ class KeyValue extends Field
     /**
      * Column headings for the key and value inputs.
      */
-    public function keyLabel(string $label): static
+    public function keyLabel(?string $label): static
     {
         $this->keyLabel = $label;
 
         return $this;
     }
 
-    public function valueLabel(string $label): static
+    public function valueLabel(?string $label): static
     {
         $this->valueLabel = $label;
 
@@ -72,7 +74,8 @@ class KeyValue extends Field
     }
 
     /**
-     * Text of the button that adds a row. Defaults to "Add row".
+     * Text of the button that adds a row. Without one the frontend shows its
+     * translated default (`key_value_add`, "Add row").
      */
     public function addActionLabel(?string $label): static
     {
@@ -216,16 +219,22 @@ class KeyValue extends Field
         return [
             $this->name => $label,
             "{$this->name}.*" => $label,
-            "{$this->name}.*.key" => "{$label} ".strtolower($this->keyLabel).' (row :position)',
-            "{$this->name}.*.value" => "{$label} ".strtolower($this->valueLabel).' (row :position)',
+            "{$this->name}.*.key" => __('inertia-forms::inertia-forms.fields.key_value.cell_attribute', [
+                'label' => $label,
+                'column' => strtolower($this->keyLabel ?? __('inertia-forms::inertia-forms.fields.key_value.key')),
+            ]),
+            "{$this->name}.*.value" => __('inertia-forms::inertia-forms.fields.key_value.cell_attribute', [
+                'label' => $label,
+                'column' => strtolower($this->valueLabel ?? __('inertia-forms::inertia-forms.fields.key_value.value')),
+            ]),
         ];
     }
 
     public function validationMessages(): array
     {
         return [
-            "{$this->name}.*.key.required_with" => 'The :attribute field is required when a value is filled in.',
-            "{$this->name}.*.key.distinct" => 'The :attribute is used more than once.',
+            "{$this->name}.*.key.required_with" => __('inertia-forms::inertia-forms.fields.key_value.key_required_with'),
+            "{$this->name}.*.key.distinct" => __('inertia-forms::inertia-forms.fields.key_value.key_distinct'),
         ];
     }
 
@@ -236,7 +245,7 @@ class KeyValue extends Field
             'valueLabel' => $this->valueLabel,
             'keyPlaceholder' => $this->keyPlaceholder,
             'valuePlaceholder' => $this->valuePlaceholder,
-            'addActionLabel' => $this->addActionLabel ?? 'Add row',
+            'addActionLabel' => $this->addActionLabel,
             'reorderable' => $this->reorderable,
             'addable' => $this->addable,
             'deletable' => $this->deletable,
@@ -255,7 +264,7 @@ class KeyValue extends Field
                 ->contains(fn (mixed $row): bool => is_array($row) && filled($row['key'] ?? null));
 
             if (! $hasKey) {
-                $fail('The :attribute field needs at least one entry.');
+                $fail(__('inertia-forms::inertia-forms.fields.key_value.required'));
             }
         };
     }

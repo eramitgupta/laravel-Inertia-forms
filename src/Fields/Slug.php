@@ -82,7 +82,7 @@ class Slug extends Field
     public function validationMessages(): array
     {
         return [
-            "{$this->name}.regex" => 'The :attribute may only contain '.($this->lowercase ? 'lower-case ' : '').'letters, numbers and single '.($this->separator === '-' ? 'dashes' : 'underscores').'.',
+            "{$this->name}.regex" => __('inertia-forms::inertia-forms.fields.slug.format_'.($this->lowercase ? 'lowercase_' : '').($this->separator === '-' ? 'dashes' : 'underscores')),
         ];
     }
 

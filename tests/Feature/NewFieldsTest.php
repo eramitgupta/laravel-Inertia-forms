@@ -62,7 +62,7 @@ it('repeats a group of fields as plain rows', function () {
 
     $schema = $repeater->toArray();
 
-    expect($schema)->toMatchArray(['component' => 'Repeater', 'addActionLabel' => 'Add link'])
+    expect($schema)->toMatchArray(['component' => 'Repeater', 'addActionLabel' => null])
         ->and($schema['blocks'])->toHaveCount(1)
         ->and($schema['blocks'][0])->toMatchArray(['label' => 'Link', 'titleFrom' => 'label', 'columns' => 2]);
 
@@ -183,7 +183,7 @@ it('takes a message and attachments in the composer', function () {
 
     expect($form->hasFiles())->toBeTrue()
         ->and($form->data()['reply'])->toBe(['message' => '', 'attachments' => []])
-        ->and($composer->toArray())->toMatchArray(['attachments' => true, 'submitOnEnter' => true, 'sendLabel' => 'Send', 'quickReplies' => ['Thanks!']]);
+        ->and($composer->toArray())->toMatchArray(['attachments' => true, 'submitOnEnter' => true, 'sendLabel' => null, 'quickReplies' => ['Thanks!']]);
 
     [$validated] = submitFields($form, ['reply' => ['message' => '  Hello  ']]);
     [$withFile] = submitFields($form, ['reply' => ['message' => '']], ['reply' => ['attachments' => [UploadedFile::fake()->create('brief.pdf', 10)]]]);

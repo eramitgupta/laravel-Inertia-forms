@@ -40,9 +40,9 @@ it('serializes its options with sensible defaults', function () {
 
     expect($field)->toMatchArray([
         'component' => 'KeyValue',
-        'keyLabel' => 'Key',
-        'valueLabel' => 'Value',
-        'addActionLabel' => 'Add row',
+        'keyLabel' => null,
+        'valueLabel' => null,
+        'addActionLabel' => null,
         'reorderable' => true,
         'addable' => true,
         'deletable' => true,

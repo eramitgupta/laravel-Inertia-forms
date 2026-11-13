@@ -55,7 +55,7 @@ final class Options
     {
         return [
             'value' => $case instanceof BackedEnum ? $case->value : $case->name,
-            'label' => method_exists($case, 'label') ? (string) $case->label() : Label::fromName($case->name),
+            'label' => method_exists($case, 'label') ? (string) $case->label() : Label::headline($case->name),
             'description' => method_exists($case, 'description') ? $case->description() : null,
             'disabled' => false,
         ];

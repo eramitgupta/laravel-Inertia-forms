@@ -69,9 +69,11 @@ abstract class Form implements Arrayable, JsonSerializable
      */
     protected bool $wizard = false;
 
-    protected string $wizardNextLabel = 'Continue';
+    /** Continue button text. `null` lets the frontend translate its default. */
+    protected ?string $wizardNextLabel = null;
 
-    protected string $wizardBackLabel = 'Back';
+    /** Back button text. `null` lets the frontend translate its default. */
+    protected ?string $wizardBackLabel = null;
 
     /** @var Model|array<string, mixed>|null */
     protected Model|array|null $model = null;

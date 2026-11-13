@@ -24,7 +24,8 @@ class Composer extends Field
 
     protected bool $submitOnEnter = true;
 
-    protected string $sendLabel = 'Send';
+    /** Send button text. `null` lets the frontend translate its default ("Send"). */
+    protected ?string $sendLabel = null;
 
     protected int $rows = 1;
 
@@ -95,7 +96,7 @@ class Composer extends Field
         return $this;
     }
 
-    public function sendLabel(string $label): static
+    public function sendLabel(?string $label): static
     {
         $this->sendLabel = $label;
 
@@ -175,8 +176,8 @@ class Composer extends Field
         return [
             ...parent::validationAttributes(),
             "{$this->name}.message" => $this->getLabel(),
-            "{$this->name}.attachments" => "{$this->getLabel()} attachments",
-            "{$this->name}.attachments.*" => "{$this->getLabel()} attachment",
+            "{$this->name}.attachments" => __('inertia-forms::inertia-forms.fields.composer.attachments_attribute', ['label' => $this->getLabel()]),
+            "{$this->name}.attachments.*" => __('inertia-forms::inertia-forms.fields.composer.attachment_attribute', ['label' => $this->getLabel()]),
         ];
     }
 
@@ -215,7 +216,7 @@ class Composer extends Field
             $files = is_array($value) ? array_filter((array) ($value['attachments'] ?? [])) : [];
 
             if ($message === '' && $files === []) {
-                $fail('Write a message or attach a file.');
+                $fail(__('inertia-forms::inertia-forms.fields.composer.required'));
             }
         };
     }

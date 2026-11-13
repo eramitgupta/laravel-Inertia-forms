@@ -47,7 +47,8 @@ class Blocks extends Field
     }
 
     /**
-     * Text of the add button. Defaults to "Add block".
+     * Text of the add button. Without one the frontend shows its translated
+     * default (`blocks_add`, "Add block").
      */
     public function addActionLabel(?string $label): static
     {
@@ -212,7 +213,7 @@ class Blocks extends Field
     {
         $attributes = [
             ...parent::validationAttributes(),
-            "{$this->name}.*.type" => "{$this->getLabel()} block type",
+            "{$this->name}.*.type" => __('inertia-forms::inertia-forms.fields.blocks.type_attribute', ['label' => $this->getLabel()]),
         ];
 
         $this->eachNestedField($data, function (Field $field, array $blockData) use (&$attributes): void {
@@ -321,7 +322,7 @@ class Blocks extends Field
     {
         return [
             'blocks' => array_map(fn (Block $block): array => $block->toArray(), $this->blocks),
-            'addActionLabel' => $this->addActionLabel ?? 'Add block',
+            'addActionLabel' => $this->addActionLabel,
             'reorderable' => $this->reorderable,
             'addable' => $this->addable,
             'deletable' => $this->deletable,
@@ -365,7 +366,11 @@ class Blocks extends Field
                 $callback(
                     $field->withName(
                         "{$this->name}.{$index}.{$this->dataPrefix()}{$field->getName()}",
-                        "{$field->getLabel()} ({$block->getLabel()} {$position})",
+                        __('inertia-forms::inertia-forms.fields.blocks.item_field_attribute', [
+                            'field' => $field->getLabel(),
+                            'block' => $block->getLabel(),
+                            'position' => (string) $position,
+                        ]),
                     ),
                     $blockData,
                 );

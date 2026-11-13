@@ -6,8 +6,8 @@ it('serializes wizard settings and step icons', function () {
     $schema = OnboardingForm::make()->toArray();
 
     expect($schema['wizard'])->toMatchArray([
-        'nextLabel' => 'Continue',
-        'backLabel' => 'Back',
+        'nextLabel' => null,
+        'backLabel' => null,
         'validateUrl' => route('inertia-forms.validate-step'),
     ])
         ->and($schema['fieldsets'][0]['icon'])->toBe('user')

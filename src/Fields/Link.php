@@ -155,8 +155,8 @@ class Link extends Field
         return [
             ...parent::validationAttributes(),
             "{$this->name}.url" => $this->getLabel(),
-            "{$this->name}.label" => "{$this->getLabel()} text",
-            "{$this->name}.target" => "{$this->getLabel()} target",
+            "{$this->name}.label" => __('inertia-forms::inertia-forms.fields.link.label_attribute', ['label' => $this->getLabel()]),
+            "{$this->name}.target" => __('inertia-forms::inertia-forms.fields.link.target_attribute', ['label' => $this->getLabel()]),
         ];
     }
 
@@ -196,7 +196,7 @@ class Link extends Field
             $hasScheme = (bool) preg_match('/^[a-z][a-z0-9+.-]*:/i', $url);
 
             if (! $hasScheme && $this->requireScheme) {
-                $fail('The :attribute must start with '.$this->allowedSchemes[0].'://.');
+                $fail(__('inertia-forms::inertia-forms.fields.link.scheme_required', ['scheme' => $this->allowedSchemes[0].'://']));
 
                 return;
             }
@@ -205,7 +205,9 @@ class Link extends Field
             $scheme = strtolower((string) parse_url($candidate, PHP_URL_SCHEME));
 
             if ($hasScheme && ! in_array($scheme, $this->allowedSchemes, true)) {
-                $fail('The :attribute must use '.implode(' or ', $this->allowedSchemes).'.');
+                $fail(__('inertia-forms::inertia-forms.fields.link.scheme_not_allowed', [
+                    'schemes' => implode(__('inertia-forms::inertia-forms.fields.link.scheme_separator'), $this->allowedSchemes),
+                ]));
 
                 return;
             }
@@ -214,7 +216,7 @@ class Link extends Field
             $opaque = ! in_array($scheme, ['http', 'https'], true);
 
             if (! $opaque && (filter_var($candidate, FILTER_VALIDATE_URL) === false || ! is_string($host) || ! str_contains($host, '.'))) {
-                $fail('The :attribute must be a valid URL.');
+                $fail(__('inertia-forms::inertia-forms.fields.link.invalid'));
             }
         };
     }

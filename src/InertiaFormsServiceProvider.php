@@ -18,6 +18,8 @@ class InertiaFormsServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        $this->loadTranslationsFrom(__DIR__.'/../lang', 'inertia-forms');
+
         Route::middleware(config('inertia-forms.search.middleware', ['web', 'throttle:60,1']))
             ->post(config('inertia-forms.search.uri', '_inertia-forms/search'), SearchOptionsController::class)
             ->name('inertia-forms.search');
@@ -32,6 +34,10 @@ class InertiaFormsServiceProvider extends ServiceProvider
             $this->publishes([
                 __DIR__.'/../config/inertia-forms.php' => config_path('inertia-forms.php'),
             ], 'inertia-forms-config');
+
+            $this->publishes([
+                __DIR__.'/../lang' => $this->app->langPath('vendor/inertia-forms'),
+            ], 'inertia-forms-lang');
         }
     }
 }

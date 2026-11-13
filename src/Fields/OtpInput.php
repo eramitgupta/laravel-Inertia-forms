@@ -89,10 +89,8 @@ class OtpInput extends Field
     public function validationMessages(): array
     {
         return [
-            "{$this->name}.size" => "The :attribute must be {$this->length} characters.",
-            "{$this->name}.regex" => $this->alphanumeric
-                ? 'The :attribute may only contain letters and numbers.'
-                : 'The :attribute may only contain numbers.',
+            "{$this->name}.size" => __('inertia-forms::inertia-forms.fields.otp.size', ['length' => (string) $this->length]),
+            "{$this->name}.regex" => __('inertia-forms::inertia-forms.fields.otp.'.($this->alphanumeric ? 'alphanumeric' : 'numeric')),
         ];
     }
 
