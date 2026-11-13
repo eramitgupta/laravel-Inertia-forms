@@ -1,5 +1,6 @@
 <script lang="ts">
     import { classes } from '../core';
+    import { useTranslate } from '../i18n.svelte';
     import Icon from '../Icon.svelte';
 
     interface Props {
@@ -8,12 +9,13 @@
     }
 
     let { label, onClear }: Props = $props();
+    const t = useTranslate();
 </script>
 
 <button
     type="button"
     class={classes.iconButton}
-    aria-label={`Clear ${label}`}
+    aria-label={t('action_clear_field', { label })}
     onclick={(event) => {
         event.stopPropagation();
         onClear();

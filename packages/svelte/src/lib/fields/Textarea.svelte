@@ -1,5 +1,6 @@
 <script lang="ts">
     import { classes, cx, type TextareaSchema } from '../core';
+    import { useTranslate } from '../i18n.svelte';
     import type { FieldComponentProps } from '../types';
 
     let {
@@ -12,6 +13,7 @@
         onChange,
     }: FieldComponentProps<TextareaSchema> = $props();
 
+    const t = useTranslate();
     let textarea = $state<HTMLTextAreaElement | null>(null);
     const text = $derived(value === null || value === undefined ? '' : String(value));
 
@@ -49,6 +51,8 @@
 ></textarea>
 {#if field.showCharacterCount}
     <p class={classes.counter}>
-        {text.length}{field.maxLength ? ` / ${field.maxLength}` : ''}
+        {field.maxLength
+            ? t('form_character_count', { count: text.length, max: field.maxLength })
+            : text.length}
     </p>
 {/if}

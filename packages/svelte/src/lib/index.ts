@@ -29,6 +29,22 @@ export { default as TextInput } from './fields/TextInput.svelte';
 export { default as TimePicker } from './fields/TimePicker.svelte';
 export { default as Toggle } from './fields/Toggle.svelte';
 export { isVisible } from './core/visibility';
+export {
+    defaultTranslations,
+    getTranslations,
+    resetTranslations,
+    setTranslations,
+    subscribeTranslations,
+    translate,
+    translateParts,
+    translationsVersion,
+    type TranslationKey,
+    type TranslationParams,
+    type TranslationPart,
+    type Translations,
+    type TranslationValue,
+} from './core/i18n';
+export { useTranslate } from './i18n.svelte';
 export type { BeforeSubmitHelpers, FieldComponent, FieldComponentProps, FormProps } from './types';
 export type {
     FieldOption,

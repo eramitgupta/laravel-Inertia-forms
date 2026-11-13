@@ -6,11 +6,16 @@
         composerHasRoom,
         composerValue,
         dragHasFiles,
-        formatFileSize,
         type ComposerSchema,
         type ComposerValue,
     } from '../core';
     import { getFormContext } from '../context';
+    import {
+        composerSendLabel,
+        formatFileSize,
+        translateParts,
+        useTranslate,
+    } from '../i18n.svelte';
     import Icon from '../Icon.svelte';
     import type { FieldComponentProps } from '../types';
 
@@ -24,6 +29,7 @@
         onChange,
     }: FieldComponentProps<ComposerSchema> = $props();
 
+    const t = useTranslate();
     const form = getFormContext();
     let textarea = $state<HTMLTextAreaElement | null>(null);
     let fileInput = $state<HTMLInputElement | null>(null);
@@ -37,6 +43,7 @@
     );
     const showHint = $derived(field.submitOnEnter && !locked);
     const hintId = $derived(`${id}-hint`);
+    const hintParts = $derived(translateParts('composer_hint', ['enter', 'newline']));
     const ariaDescribedBy = $derived(
         [describedBy, showHint ? hintId : null].filter(Boolean).join(' ') || undefined,
     );
@@ -102,7 +109,7 @@
 
 <div class={classes.composer}>
     {#if field.quickReplies.length > 0}
-        <div role="group" aria-label="Quick replies" class={classes.composerReplies}>
+        <div role="group" aria-label={t('composer_quick_replies')} class={classes.composerReplies}>
             {#each field.quickReplies as reply, index (`${reply}-${index}`)}
                 <button
                     type="button"
@@ -145,7 +152,7 @@
             onkeydown={keydown}
         ></textarea>
         {#if current.attachments.length > 0}
-            <div role="list" aria-label="Attachments" class={classes.composerFiles}>
+            <div role="list" aria-label={t('composer_attachments')} class={classes.composerFiles}>
                 {#each current.attachments as file, index (`${file.name}-${index}`)}
                     <div role="listitem" class={classes.composerFile}>
                         <span class={classes.composerFileIcon} aria-hidden="true">
@@ -162,7 +169,7 @@
                             <button
                                 type="button"
                                 class={classes.composerFileRemove}
-                                aria-label={`Remove ${file.name}`}
+                                aria-label={t('composer_remove_attachment', { name: file.name })}
                                 onclick={() => removeFile(index)}
                             >
                                 <Icon name="x" class={classes.composerRemoveIcon} />
@@ -177,8 +184,8 @@
                 <button
                     type="button"
                     class={classes.composerAttach}
-                    title="Attach files"
-                    aria-label="Attach files"
+                    title={t('composer_attach')}
+                    aria-label={t('composer_attach')}
                     aria-controls={`${id}-files`}
                     disabled={!canAttach}
                     onclick={() => fileInput?.click()}
@@ -202,7 +209,10 @@
             <div class={classes.composerActions}>
                 {#if field.maxLength !== null}
                     <span class={classes.composerCounter}
-                        >{`${current.message.length} / ${field.maxLength}`}</span
+                        >{t('form_character_count', {
+                            count: current.message.length,
+                            max: field.maxLength,
+                        })}</span
                     >
                 {/if}
                 <button
@@ -212,7 +222,7 @@
                     disabled={locked || processing}
                     aria-busy={processing || undefined}
                 >
-                    {field.sendLabel}
+                    {composerSendLabel(field)}
                     {#if processing}
                         <span class={classes.spinner} aria-hidden="true"></span>
                     {:else}
@@ -224,8 +234,12 @@
     </div>
     {#if showHint}
         <p id={hintId} class={classes.composerHint}>
-            Press <kbd class={classes.composerKbd}>Enter</kbd> to send,
-            <kbd class={classes.composerKbd}>Shift + Enter</kbd> for new line
+            {#each hintParts as part, index (index)}{#if typeof part === 'string'}{part}{:else}<kbd
+                        class={classes.composerKbd}
+                        >{t(
+                            part.slot === 'enter' ? 'composer_key_enter' : 'composer_key_newline',
+                        )}</kbd
+                    >{/if}{/each}
         </p>
     {/if}
 </div>

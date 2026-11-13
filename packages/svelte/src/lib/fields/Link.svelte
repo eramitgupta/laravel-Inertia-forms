@@ -1,12 +1,6 @@
 <script lang="ts">
-    import {
-        classes,
-        linkParts,
-        linkSchemeHint,
-        linkValue,
-        type LinkParts,
-        type LinkSchema,
-    } from '../core';
+    import { classes, linkParts, linkValue, type LinkParts, type LinkSchema } from '../core';
+    import { linkSchemeHint, useTranslate } from '../i18n.svelte';
     import Icon from '../Icon.svelte';
     import type { FieldComponentProps } from '../types';
 
@@ -25,9 +19,11 @@
     }: FieldComponentProps<LinkSchema> = $props();
 
     const TARGETS = [
-        { value: '_self', label: 'Same tab' },
-        { value: '_blank', label: 'New tab' },
+        { value: '_self', label: 'link_same_tab' },
+        { value: '_blank', label: 'link_new_tab' },
     ] as const;
+
+    const t = useTranslate();
 
     const parts = $derived(linkParts(value));
     const hint = $derived(linkSchemeHint(field, parts.url));
@@ -55,7 +51,7 @@
             inputmode="url"
             autocomplete="url"
             value={parts.url}
-            placeholder={field.placeholder ?? 'https://example.com'}
+            placeholder={field.placeholder ?? t('link_url_placeholder')}
             required={field.required}
             {disabled}
             readonly={field.readonly}
@@ -79,10 +75,10 @@
                         name={`${field.name}[label]`}
                         type="text"
                         value={parts.label}
-                        placeholder={field.labelPlaceholder ?? 'Link text'}
+                        placeholder={field.labelPlaceholder ?? t('link_text_placeholder')}
                         {disabled}
                         readonly={field.readonly}
-                        aria-label={`${field.label} text`}
+                        aria-label={t('link_text_label', { label: field.label })}
                         aria-invalid={error ? true : undefined}
                         class={classes.input}
                         oninput={(event) => update({ label: event.currentTarget.value })}
@@ -92,7 +88,7 @@
             {#if field.withTarget}
                 <div
                     role="radiogroup"
-                    aria-label={`Open ${field.label} in`}
+                    aria-label={t('link_target_label', { label: field.label })}
                     class={classes.segmented}
                 >
                     {#each TARGETS as target (target.value)}
@@ -108,7 +104,7 @@
                                 disabled={locked}
                                 class={classes.visuallyHidden}
                                 onchange={() => update({ target: target.value })}
-                            />{target.label}</label
+                            />{t(target.label)}</label
                         >
                     {/each}
                 </div>

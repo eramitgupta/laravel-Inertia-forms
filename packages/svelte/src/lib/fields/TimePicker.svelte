@@ -1,5 +1,6 @@
 <script lang="ts">
     import { classes, nowTime, type TimePickerSchema } from '../core';
+    import { useTranslate } from '../i18n.svelte';
     import Icon from '../Icon.svelte';
     import { createPopover } from '../popover.svelte';
     import type { FieldComponentProps } from '../types';
@@ -21,6 +22,7 @@
         onChange,
     }: FieldComponentProps<TimePickerSchema> = $props();
 
+    const t = useTranslate();
     const popover = createPopover();
     const locked = $derived(disabled || field.readonly);
     const time = $derived(typeof value === 'string' ? value : '');
@@ -108,7 +110,7 @@
                         popover.setOpen(false);
                     }}
                 >
-                    Now
+                    {t('time_now')}
                 </button>
                 <button
                     type="button"
@@ -118,7 +120,7 @@
                         popover.setOpen(false);
                     }}
                 >
-                    Clear
+                    {t('action_clear')}
                 </button>
             </div>
         </div>

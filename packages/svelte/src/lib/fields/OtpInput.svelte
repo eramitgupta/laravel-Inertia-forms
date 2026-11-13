@@ -9,6 +9,7 @@
         typedOtp,
         type OtpInputSchema,
     } from '../core';
+    import { useTranslate } from '../i18n.svelte';
     import type { FieldComponentProps } from '../types';
 
     /**
@@ -28,7 +29,7 @@
     const length = $derived(field.length);
     const code = $derived(cleanOtp(value, field.alphanumeric).slice(0, length));
     const locked = $derived(disabled || field.readonly);
-    const noun = $derived(field.alphanumeric ? 'Character' : 'Digit');
+    const t = useTranslate();
     let boxes: HTMLInputElement[] = $state([]);
 
     function focusBox(index: number) {
@@ -111,7 +112,10 @@
             {disabled}
             readonly={field.readonly}
             autofocus={field.autofocus && index === 0}
-            aria-label={`${noun} ${index + 1} of ${length}`}
+            aria-label={t(field.alphanumeric ? 'otp_character' : 'otp_digit', {
+                number: index + 1,
+                total: length,
+            })}
             aria-invalid={error ? true : undefined}
             class={classes.otpBox}
             onfocus={() => index > code.length && focusBox(code.length)}

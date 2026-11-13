@@ -7,6 +7,7 @@
         type KeyValueRow,
         type KeyValueSchema,
     } from '../core';
+    import { keyValueLabels, useTranslate } from '../i18n.svelte';
     import Icon from '../Icon.svelte';
     import type { FieldComponentProps } from '../types';
 
@@ -24,6 +25,8 @@
         onChange,
     }: FieldComponentProps<KeyValueSchema> = $props();
 
+    const t = useTranslate();
+    const labels = $derived(keyValueLabels(field));
     let table = $state<HTMLDivElement | null>(null);
     let dragIndex = $state<number | null>(null);
     const rows = $derived(keyValueRows(value));
@@ -78,14 +81,15 @@
     >
         <div class={cx(grid, classes.kvHeader)} aria-hidden="true">
             {#if field.reorderable}<span class="w-[5.5rem]"></span>{/if}
-            <span>{field.keyLabel}</span>
-            <span>{field.valueLabel}</span>
+            <span>{labels.key}</span>
+            <span>{labels.value}</span>
             <span class="w-7"></span>
         </div>
         {#if rows.length === 0}
-            <div class={classes.kvEmpty}>No entries yet.</div>
+            <div class={classes.kvEmpty}>{t('key_value_empty')}</div>
         {/if}
         {#each rows as row, index (index)}
+            {@const rowName = t('key_value_row', { number: index + 1 })}
             <!-- svelte-ignore a11y_no_static_element_interactions -->
             <div
                 data-row={index}
@@ -125,7 +129,7 @@
                             type="button"
                             data-move="up"
                             class={classes.kvButton}
-                            aria-label={`Move row ${index + 1} up`}
+                            aria-label={t('collection_move_up', { name: rowName })}
                             disabled={locked || index === 0}
                             onclick={() => move(index, -1)}
                         >
@@ -135,7 +139,7 @@
                             type="button"
                             data-move="down"
                             class={classes.kvButton}
-                            aria-label={`Move row ${index + 1} down`}
+                            aria-label={t('collection_move_down', { name: rowName })}
                             disabled={locked || index === rows.length - 1}
                             onclick={() => move(index, 1)}
                         >
@@ -148,7 +152,7 @@
                     data-part="key"
                     value={row.key}
                     placeholder={field.keyPlaceholder ?? undefined}
-                    aria-label={`${field.keyLabel} ${index + 1}`}
+                    aria-label={t('key_value_cell', { label: labels.key, number: index + 1 })}
                     aria-invalid={error ? true : undefined}
                     {disabled}
                     readonly={field.readonly || !field.editableKeys}
@@ -160,7 +164,7 @@
                     data-part="value"
                     value={row.value}
                     placeholder={field.valuePlaceholder ?? undefined}
-                    aria-label={`${field.valueLabel} ${index + 1}`}
+                    aria-label={t('key_value_cell', { label: labels.value, number: index + 1 })}
                     aria-invalid={error ? true : undefined}
                     {disabled}
                     readonly={field.readonly}
@@ -171,7 +175,7 @@
                     <button
                         type="button"
                         class={classes.kvRemove}
-                        aria-label={`Remove row ${index + 1}`}
+                        aria-label={t('action_delete_field', { name: rowName })}
                         disabled={locked}
                         onclick={() => remove(index)}
                     >
@@ -186,7 +190,7 @@
     {#if field.addable}
         <button type="button" class={classes.kvAdd} disabled={locked || full} onclick={add}>
             <Icon name="plus" class="size-4" />
-            {field.addActionLabel}
+            {labels.add}
         </button>
     {/if}
 </div>

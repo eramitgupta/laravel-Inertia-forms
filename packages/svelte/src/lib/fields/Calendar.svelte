@@ -8,16 +8,8 @@
 </script>
 
 <script lang="ts">
-    import {
-        addMonths,
-        classes,
-        isOutsideLimits,
-        monthGrid,
-        monthLabel,
-        monthStart,
-        todayIso,
-        weekdayLabels,
-    } from '../core';
+    import { addMonths, classes, isOutsideLimits, monthGrid, monthStart, todayIso } from '../core';
+    import { calendarDayLabel, monthLabel, useTranslate, weekdayLabels } from '../i18n.svelte';
     import Icon from '../Icon.svelte';
 
     interface Props {
@@ -50,6 +42,7 @@
         onHover,
     }: Props = $props();
 
+    const t = useTranslate();
     let root = $state<HTMLDivElement | null>(null);
     let focusIso = $state<string | null>(null);
     const today = $derived(todayIso());
@@ -121,7 +114,7 @@
             <button
                 type="button"
                 class={classes.calendarNav}
-                aria-label="Previous year"
+                aria-label={t('calendar_previous_year')}
                 onclick={() => onView(addMonths(view, -12))}
             >
                 <Icon name="chevronsLeft" class="size-4" />
@@ -129,7 +122,7 @@
             <button
                 type="button"
                 class={classes.calendarNav}
-                aria-label="Previous month"
+                aria-label={t('calendar_previous_month')}
                 onclick={() => onView(addMonths(view, -1))}
             >
                 <Icon name="chevronLeft" class="size-4" />
@@ -142,7 +135,7 @@
             <button
                 type="button"
                 class={classes.calendarNav}
-                aria-label="Next month"
+                aria-label={t('calendar_next_month')}
                 onclick={() => onView(addMonths(view, 1))}
             >
                 <Icon name="chevronRight" class="size-4" />
@@ -150,7 +143,7 @@
             <button
                 type="button"
                 class={classes.calendarNav}
-                aria-label="Next year"
+                aria-label={t('calendar_next_year')}
                 onclick={() => onView(addMonths(view, 12))}
             >
                 <Icon name="chevronsRight" class="size-4" />
@@ -179,7 +172,7 @@
                             data-in-range={(day.inMonth && !selected && isInRange(day.iso)) ||
                                 undefined}
                             aria-pressed={selected}
-                            aria-label={parseIsoDate(day.iso)!.toDateString()}
+                            aria-label={calendarDayLabel(day.iso)}
                             tabindex={tabbable ? 0 : -1}
                             disabled={isOutsideLimits(day.iso, minDate, maxDate)}
                             class={classes.calendarDay}

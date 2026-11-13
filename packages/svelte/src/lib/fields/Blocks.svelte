@@ -10,7 +10,6 @@
     import { untrack } from 'svelte';
     import {
         blockDefaults,
-        blockTitle,
         builderFieldName,
         builderItems,
         builderValue,
@@ -28,6 +27,7 @@
     } from '../core';
     import { getFormContext } from '../context';
     import FieldRenderer, { builtInComponents } from '../FieldRenderer.svelte';
+    import { blockTitle, builderAddLabel, useTranslate } from '../i18n.svelte';
     import Icon from '../Icon.svelte';
     import { createPopover } from '../popover.svelte';
     import type { FieldComponentProps } from '../types';
@@ -46,6 +46,7 @@
         onChange,
     }: FieldComponentProps<BlocksSchema> = $props();
 
+    const t = useTranslate();
     const form = getFormContext();
     const menu = createPopover();
     let root = $state<HTMLDivElement | null>(null);
@@ -69,6 +70,7 @@
         untrack(() => (field.collapsed ? new Set(uids) : new Set())),
     );
 
+    const addLabel = $derived(builderAddLabel(field));
     const full = $derived(field.maxItems !== null && items.length >= field.maxItems);
     // A Repeater has a single item type, so its add button never opens a menu.
     const hasMenu = $derived(!repeater && field.blocks.length > 1);
@@ -182,12 +184,14 @@
 >
     {#if field.collapsible && items.length > 0}
         <button type="button" class={classes.builderCollapseAll} onclick={toggleAll}>
-            {allCollapsed ? 'Expand all' : 'Collapse all'}
+            {allCollapsed ? t('collection_expand_all') : t('collection_collapse_all')}
         </button>
     {/if}
 
     {#if items.length === 0}
-        <div class={classes.builderEmpty}>{repeater ? 'No items yet.' : 'No blocks yet.'}</div>
+        <div class={classes.builderEmpty}>
+            {repeater ? t('repeater_empty') : t('blocks_empty')}
+        </div>
     {/if}
 
     {#each items as item, index (uids[index])}
@@ -196,6 +200,7 @@
             {@const uid = uids[index]!}
             {@const isCollapsed = field.collapsible && collapsed.has(uid)}
             {@const bodyId = `${id}-block-${uid}`}
+            {@const itemName = t('collection_item', { label: block.label, number: index + 1 })}
             {@const fields = block.fields.filter(
                 (inner) => inner.component !== 'Submit' && isVisible(inner.visibility, item.data),
             )}
@@ -272,7 +277,7 @@
                                 type="button"
                                 data-move="up"
                                 class={classes.kvButton}
-                                aria-label={`Move ${block.label} ${index + 1} up`}
+                                aria-label={t('collection_move_up', { name: itemName })}
                                 disabled={locked || index === 0}
                                 onclick={() => move(index, -1)}
                             >
@@ -282,7 +287,7 @@
                                 type="button"
                                 data-move="down"
                                 class={classes.kvButton}
-                                aria-label={`Move ${block.label} ${index + 1} down`}
+                                aria-label={t('collection_move_down', { name: itemName })}
                                 disabled={locked || index === items.length - 1}
                                 onclick={() => move(index, 1)}
                             >
@@ -293,7 +298,7 @@
                             <button
                                 type="button"
                                 class={classes.kvRemove}
-                                aria-label={`Delete ${block.label} ${index + 1}`}
+                                aria-label={t('action_delete_field', { name: itemName })}
                                 disabled={locked ||
                                     (field.minItems !== null && items.length <= field.minItems)}
                                 onclick={() => remove(index)}
@@ -342,14 +347,14 @@
                 onclick={openMenu}
             >
                 <Icon name="plus" class="size-4" />
-                {field.addActionLabel}
+                {addLabel}
             </button>
             {#if hasMenu && menu.open}
                 <!-- svelte-ignore a11y_interactive_supports_focus -->
                 <div
                     bind:this={menu.panel}
                     role="menu"
-                    aria-label={field.addActionLabel}
+                    aria-label={addLabel}
                     class={menu.panelClass(classes.builderMenu)}
                     onkeydown={menuKeydown}
                 >

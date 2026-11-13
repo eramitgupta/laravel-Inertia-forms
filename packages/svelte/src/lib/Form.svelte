@@ -59,6 +59,7 @@
         mergeComponents,
     } from './core';
     import { setFormContext } from './context';
+    import { useTranslate, wizardBackLabel, wizardNextLabel } from './i18n.svelte';
     import FieldRenderer, { builtInComponents } from './FieldRenderer.svelte';
     import SubmitButton from './fields/SubmitButton.svelte';
     import Icon from './Icon.svelte';
@@ -84,6 +85,7 @@
         onFinish,
     }: FormProps = $props();
 
+    const t = useTranslate();
     const uid = $props.id();
     const formId = `erag-form-${uid.replace(/[^a-zA-Z0-9]/g, '')}`;
     let root = $state<HTMLFormElement | null>(null);
@@ -356,7 +358,7 @@
                     disabled={checkingStep || inertia.processing}
                     onclick={() => goToStep(currentStep - 1)}
                 >
-                    <Icon name="chevronLeft" class={classes.submitIcon} />{wizard.backLabel}
+                    <Icon name="chevronLeft" class={classes.submitIcon} />{wizardBackLabel(wizard)}
                 </button>
             {/if}
             <div class={classes.wizardActions}>
@@ -368,7 +370,7 @@
                         aria-busy={checkingStep || undefined}
                     >
                         {#if checkingStep}<span class={classes.submitSpinner} aria-hidden="true"
-                            ></span>{/if}{wizard.nextLabel}{#if !checkingStep}<Icon
+                            ></span>{/if}{wizardNextLabel(wizard)}{#if !checkingStep}<Icon
                                 name="chevronRight"
                                 class={classes.submitIcon}
                             />{/if}
@@ -378,7 +380,7 @@
                         {@render field(item, 1)}
                     {/each}
                 {:else if !hasSubmitField(schema)}
-                    <SubmitButton label="Submit" processing={inertia.processing} />
+                    <SubmitButton label={t('form_submit')} processing={inertia.processing} />
                 {/if}
             </div>
         </div>
@@ -393,7 +395,7 @@
         {/each}
         {@render children?.({ isDirty, processing: inertia.processing })}
         {#if !hasSubmitField(schema)}
-            <SubmitButton label="Submit" processing={inertia.processing} />
+            <SubmitButton label={t('form_submit')} processing={inertia.processing} />
         {/if}
     {/if}
 </form>

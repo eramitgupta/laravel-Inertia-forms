@@ -17,6 +17,7 @@
         type ColorPickerSchema,
         type Hsl,
     } from '../core';
+    import { useTranslate } from '../i18n.svelte';
     import Icon from '../Icon.svelte';
     import { createPopover } from '../popover.svelte';
     import type { FieldComponentProps } from '../types';
@@ -36,6 +37,7 @@
         onChange,
     }: FieldComponentProps<ColorPickerSchema> = $props();
 
+    const t = useTranslate();
     const popover = createPopover();
     const color = $derived(typeof value === 'string' ? value : '');
     const hex = $derived(normalizeHex(color));
@@ -65,9 +67,9 @@
     const sliders = $derived<
         Array<{ key: keyof Hsl; label: string; max: number; background: string }>
     >([
-        { key: 'h', label: 'Hue', max: 360, background: hueGradient },
-        { key: 's', label: 'Saturation', max: 100, background: saturationGradient(hsl) },
-        { key: 'l', label: 'Lightness', max: 100, background: lightnessGradient(hsl) },
+        { key: 'h', label: t('color_hue'), max: 360, background: hueGradient },
+        { key: 's', label: t('color_saturation'), max: 100, background: saturationGradient(hsl) },
+        { key: 'l', label: t('color_lightness'), max: 100, background: lightnessGradient(hsl) },
     ]);
 
     function update(next: unknown) {
@@ -134,7 +136,7 @@
                 class={color
                     ? `${classes.triggerValue} font-mono uppercase`
                     : classes.triggerPlaceholder}
-                >{color || field.placeholder || 'Pick a color'}</span
+                >{color || field.placeholder || t('color_placeholder')}</span
             >
         </button>
         {#if field.clearable && color && !locked}
@@ -194,7 +196,7 @@
                         placeholder="#000000"
                         maxlength={7}
                         spellcheck={false}
-                        aria-label={`${field.label} hex code`}
+                        aria-label={t('color_hex_code', { label: field.label })}
                         class={classes.colorHex}
                         oninput={(event) => {
                             text = event.currentTarget.value;
@@ -211,7 +213,7 @@
                         <button
                             type="button"
                             class={classes.colorTool}
-                            aria-label="Pick a color from the screen"
+                            aria-label={t('color_eyedropper')}
                             onclick={pickFromScreen}
                         >
                             <Icon name="eyedropper" class="size-4" />
@@ -220,7 +222,7 @@
                     <button
                         type="button"
                         class={classes.colorTool}
-                        aria-label={copied ? 'Copied' : 'Copy hex code'}
+                        aria-label={copied ? t('action_copied') : t('color_copy_hex')}
                         disabled={!hex}
                         onclick={copy}
                     >

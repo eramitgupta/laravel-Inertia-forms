@@ -2,6 +2,7 @@
     import { untrack } from 'svelte';
     import { classes, slugify, slugSource, type SlugSchema } from '../core';
     import { getFormContext } from '../context';
+    import { useTranslate } from '../i18n.svelte';
     import Icon from '../Icon.svelte';
     import type { FieldComponentProps } from '../types';
 
@@ -19,6 +20,7 @@
         onChange,
     }: FieldComponentProps<SlugSchema> = $props();
 
+    const t = useTranslate();
     const form = getFormContext();
 
     const text = $derived(
@@ -89,8 +91,8 @@
             <button
                 type="button"
                 class={classes.iconButton}
-                aria-label={`Regenerate ${field.label}`}
-                title={`Regenerate ${field.label}`}
+                aria-label={t('slug_regenerate', { label: field.label })}
+                title={t('slug_regenerate', { label: field.label })}
                 onclick={regenerate}
             >
                 <Icon name="slugRegenerate" class="size-4" />

@@ -15,6 +15,7 @@
         parseTime,
         secondOptions,
     } from '../core';
+    import { useTranslate } from '../i18n.svelte';
 
     type Part = TimePart;
 
@@ -34,13 +35,14 @@
      */
     let { id, value, withSeconds, minuteStep, minTime, maxTime, onChange }: Props = $props();
 
+    const t = useTranslate();
     let root = $state<HTMLDivElement | null>(null);
     const parts = $derived(parseTime(value));
     const columns = $derived<Array<{ part: Part; title: string; options: string[] }>>([
-        { part: 'hour', title: 'Hour', options: hourOptions() },
-        { part: 'minute', title: 'Min', options: minuteOptions(minuteStep) },
+        { part: 'hour', title: t('time_hour'), options: hourOptions() },
+        { part: 'minute', title: t('time_minute'), options: minuteOptions(minuteStep) },
         ...(withSeconds
-            ? [{ part: 'second' as const, title: 'Sec', options: secondOptions() }]
+            ? [{ part: 'second' as const, title: t('time_second'), options: secondOptions() }]
             : []),
     ]);
 

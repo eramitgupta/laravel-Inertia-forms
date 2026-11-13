@@ -10,6 +10,7 @@
         type FieldOption,
         type SelectSchema,
     } from '../core';
+    import { useTranslate } from '../i18n.svelte';
     import Icon from '../Icon.svelte';
     import { createPopover } from '../popover.svelte';
     import type { FieldComponentProps } from '../types';
@@ -30,6 +31,7 @@
         onChange,
     }: FieldComponentProps<SelectSchema> = $props();
 
+    const t = useTranslate();
     const popover = createPopover();
     let control = $state<HTMLInputElement | HTMLButtonElement | null>(null);
     let query = $state('');
@@ -66,7 +68,7 @@
         );
     });
     const placeholder = $derived(
-        field.placeholder ?? (field.searchable ? 'Search…' : 'Select an option'),
+        field.placeholder ?? t(field.searchable ? 'option_search' : 'option_placeholder'),
     );
 
     $effect(() => {
@@ -212,7 +214,7 @@
                         >{option.label}{#if !locked}<button
                                 type="button"
                                 class={classes.chipRemove}
-                                aria-label={`Remove ${option.label}`}
+                                aria-label={t('option_remove', { name: option.label })}
                                 onclick={(event) => {
                                     event.stopPropagation();
                                     choose(option);
@@ -282,7 +284,9 @@
                 {#if selected.length === 0}
                     <span class={classes.triggerPlaceholder}>{placeholder}</span>
                 {:else if field.multiple}
-                    <span class="sr-only">{`${selected.length} selected`}</span>
+                    <span class="sr-only"
+                        >{t('option_selected_count', { count: selected.length })}</span
+                    >
                 {:else}
                     <span class={classes.triggerValue}>{singleLabel}</span>
                 {/if}
@@ -303,7 +307,9 @@
             class={popover.panelClass(classes.comboboxList)}
         >
             {#if filtered.length === 0}
-                <div class={classes.comboboxEmpty}>{loading ? 'Searching…' : 'No results'}</div>
+                <div class={classes.comboboxEmpty}>
+                    {loading ? t('option_searching') : t('option_no_results')}
+                </div>
             {/if}
             {#each filtered as option, index (normalize(option.value))}
                 {@const selected = selectedValues.includes(normalize(option.value))}

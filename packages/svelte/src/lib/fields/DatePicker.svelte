@@ -15,13 +15,13 @@
     import {
         classes,
         datePart,
-        formatDisplayDate,
         monthStart,
         nextRange,
         timePart,
         todayIso,
         type DatePickerSchema,
     } from '../core';
+    import { formatDisplayDate, useTranslate } from '../i18n.svelte';
     import Icon from '../Icon.svelte';
     import { createPopover } from '../popover.svelte';
     import type { FieldComponentProps } from '../types';
@@ -43,6 +43,7 @@
         onChange,
     }: FieldComponentProps<DatePickerSchema> = $props();
 
+    const t = useTranslate();
     const popover = createPopover();
     let view = $state(
         untrack(() => monthStart(field.range ? toRange(value).start : (value as string))),
@@ -55,12 +56,15 @@
     const display = $derived(
         field.range
             ? range.start
-                ? `${formatDisplayDate(range.start)} – ${range.end ? formatDisplayDate(range.end) : '…'}`
+                ? t('date_range', {
+                      start: formatDisplayDate(range.start),
+                      end: range.end ? formatDisplayDate(range.end) : '…',
+                  })
                 : ''
             : formatDisplayDate(single),
     );
     const placeholder = $derived(
-        field.placeholder ?? (field.range ? 'Select dates' : 'Select a date'),
+        field.placeholder ?? t(field.range ? 'date_range_placeholder' : 'date_placeholder'),
     );
 
     function update(next: unknown) {
@@ -177,9 +181,11 @@
                         if (!field.range) select(todayIso());
                     }}
                 >
-                    Today
+                    {t('date_today')}
                 </button>
-                <button type="button" class={classes.popoverAction} onclick={clear}>Clear</button>
+                <button type="button" class={classes.popoverAction} onclick={clear}
+                    >{t('action_clear')}</button
+                >
             </div>
         </div>
     {/if}

@@ -1,5 +1,6 @@
 <script lang="ts">
-    import { classes, cx, fileUploadHint, formatFileSize, type FileUploadSchema } from '../core';
+    import { classes, cx, type FileUploadSchema } from '../core';
+    import { fileUploadHint, formatFileSize, translateParts, useTranslate } from '../i18n.svelte';
     import Icon from '../Icon.svelte';
     import type { FieldComponentProps } from '../types';
 
@@ -13,6 +14,7 @@
         onChange,
     }: FieldComponentProps<FileUploadSchema> = $props();
 
+    const t = useTranslate();
     let input = $state<HTMLInputElement | null>(null);
     let dragging = $state(false);
     const files = $derived(
@@ -27,6 +29,7 @@
     );
     const locked = $derived(disabled || field.readonly);
     const hint = $derived(fileUploadHint(field));
+    const prompt = $derived(translateParts('file_upload_drop_prompt', ['action']));
 
     $effect(() => {
         const urls = previews;
@@ -86,9 +89,9 @@
     >
         <Icon name="upload" class={classes.dropzoneIcon} />
         <span class={classes.dropzoneTitle}
-            >{#if field.placeholder !== null && field.placeholder !== undefined}{field.placeholder}{:else}<span
-                    class={classes.dropzoneLink}>Click to upload</span
-                > or drag and drop{/if}</span
+            >{#if field.placeholder !== null && field.placeholder !== undefined}{field.placeholder}{:else}{#each prompt as part, index (index)}{#if typeof part === 'string'}{part}{:else}<span
+                            class={classes.dropzoneLink}>{t('file_upload_click_to_upload')}</span
+                        >{/if}{/each}{/if}</span
         >
         {#if hint}
             <span class={classes.dropzoneHint}>{hint}</span>
@@ -121,7 +124,7 @@
                             class={classes.fileRemove}
                             onclick={() => remove(index)}
                         >
-                            Remove
+                            {t('action_remove')}
                         </button>
                     {/if}
                 </div>

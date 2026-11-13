@@ -4,10 +4,10 @@
         wizardCircleClass,
         wizardProgress,
         wizardStepIcon,
-        wizardStepLabel,
         wizardStepState,
         type FieldsetSchema,
     } from './core';
+    import { useTranslate, wizardProgressText, wizardStepLabel } from './i18n.svelte';
     import Icon from './Icon.svelte';
 
     /**
@@ -22,6 +22,7 @@
     }
 
     let { steps, current, onSelect }: Props = $props();
+    const t = useTranslate();
     const currentStep = $derived(steps[current]);
 </script>
 
@@ -48,10 +49,10 @@
     </span>
 {/snippet}
 
-<nav aria-label="Progress" class={classes.wizardNav}>
+<nav aria-label={t('wizard_progress_label')} class={classes.wizardNav}>
     {#if currentStep}
         <div class={classes.wizardCompact}>
-            <p class={classes.wizardCompactCount}>{`Step ${current + 1} of ${steps.length}`}</p>
+            <p class={classes.wizardCompactCount}>{wizardProgressText(current, steps.length)}</p>
             <p class={classes.wizardCompactTitle}>{wizardStepLabel(currentStep, current)}</p>
             <div class={classes.wizardCompactTrack} aria-hidden="true">
                 <span

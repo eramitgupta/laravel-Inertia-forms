@@ -1,5 +1,6 @@
 <script lang="ts">
     import { addTags, classes, cx, moveItem, type TagsInputSchema } from '../core';
+    import { useTranslate } from '../i18n.svelte';
     import Icon from '../Icon.svelte';
     import { createPopover } from '../popover.svelte';
     import type { FieldComponentProps } from '../types';
@@ -18,6 +19,7 @@
         onChange,
     }: FieldComponentProps<TagsInputSchema> = $props();
 
+    const t = useTranslate();
     const popover = createPopover();
     let input = $state<HTMLInputElement | null>(null);
     let text = $state('');
@@ -88,7 +90,7 @@
             <div
                 role="list"
                 class={cx(classes.chips, 'flex-none')}
-                aria-label={`${field.label} tags`}
+                aria-label={t('tags_list', { label: field.label })}
             >
                 {#each tags as tag, index (tag)}
                     <div
@@ -118,7 +120,7 @@
                             <button
                                 type="button"
                                 class={classes.chipRemove}
-                                aria-label={`Remove ${tag}`}
+                                aria-label={t('tags_remove', { name: tag })}
                                 onclick={(event) => {
                                     event.stopPropagation();
                                     update(tags.filter((item) => item !== tag));
@@ -149,7 +151,7 @@
                 aria-describedby={describedBy}
                 bind:value={text}
                 maxlength={field.maxTagLength ?? undefined}
-                placeholder={tags.length ? '' : (field.placeholder ?? 'Type and press Enter')}
+                placeholder={tags.length ? '' : (field.placeholder ?? t('tags_placeholder'))}
                 disabled={locked}
                 autofocus={field.autofocus}
                 class={classes.triggerSearch}
@@ -174,7 +176,7 @@
             bind:this={popover.panel}
             id={listId}
             role="listbox"
-            aria-label={`${field.label} suggestions`}
+            aria-label={t('tags_suggestions', { label: field.label })}
             class={popover.panelClass(classes.comboboxList)}
         >
             {#each suggestions as suggestion, index (suggestion)}
