@@ -8,6 +8,7 @@ Forms are defined in one PHP class and rendered by one `<Form>` component in Vue
 - Rules come from the fields (`required()`, `email()`, `maxLength()`, options, file types); add more with `rules([...])`.
 - `visibleWhen()` / `hiddenWhen()` only change the UI and skip hidden fields in validation. Use `authorizedWhen()` / `authorize()` for fields a user must never see or submit.
 - Icons: `icon('rocket')` on `Submit`, `Fieldset` (wizard steps) and `Callout`. Over 200 names are built in; add more with `Icon::register()` or `config('inertia-forms.icons')`.
+- Translations: wrap your own labels and copy in `__()` in the form class; package messages come from `php artisan vendor:publish --tag=inertia-forms-lang`; component text (buttons, placeholders, calendar) from `setTranslations()` in the frontend entry. Use the `inertia-forms-translations` skill.
 
 @verbatim
 <code-snippet name="A form class and its controller" lang="php">

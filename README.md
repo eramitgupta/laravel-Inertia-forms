@@ -2,6 +2,15 @@
 
 # Laravel Inertia Forms
 
+[![Packagist License](https://img.shields.io/badge/License-MIT-blue)](https://github.com/eramitgupta/laravel-Inertia-forms/blob/main/LICENSE)
+[![Latest Stable Version](https://img.shields.io/packagist/v/erag/inertia-forms?label=Stable)](https://packagist.org/packages/erag/inertia-forms)
+[![Laravel Compatibility](https://badge.laravel.cloud/badge/erag/inertia-forms)](https://packagist.org/packages/erag/inertia-forms)
+[![Total Downloads](https://img.shields.io/packagist/dt/erag/inertia-forms.svg?label=Downloads)](https://packagist.org/packages/erag/inertia-forms)
+
+[![Vue](https://img.shields.io/npm/v/@erag/inertia-forms-vue?label=Vue&color=42b883)](https://www.npmjs.com/package/@erag/inertia-forms-vue)
+[![React](https://img.shields.io/npm/v/@erag/inertia-forms-react?label=React&color=61dafb)](https://www.npmjs.com/package/@erag/inertia-forms-react)
+[![Svelte](https://img.shields.io/npm/v/@erag/inertia-forms-svelte?label=Svelte&color=ff3e00)](https://www.npmjs.com/package/@erag/inertia-forms-svelte)
+
 **Build forms in Laravel using PHP and render them in Vue, React, or Svelte with a single `<Form>` component.**
 
 Define your fields, layout, and validation rules in Laravel. The package handles rendering and validation, so you don't have to build and maintain the same form logic separately on the frontend.
@@ -137,6 +146,74 @@ This lets you extend the package while keeping the same form-building approach.
 
 ---
 
+## Translations
+
+Text is translated in two places, depending on who renders it.
+
+### Laravel: package messages
+
+Validation messages and attribute names that the package writes itself (a required Composer, KeyValue rows, Link schemes, Slug and OTP formats, and so on) live in a language file under the `inertia-forms` namespace. Publish it and edit the copy for each locale:
+
+```bash
+php artisan vendor:publish --tag=inertia-forms-lang
+```
+
+This copies the English file to `lang/vendor/inertia-forms/en/inertia-forms.php`. Add `lang/vendor/inertia-forms/nl/inertia-forms.php` (and so on) with the keys you want to change; missing keys fall back to the package's English.
+
+```php
+// lang/vendor/inertia-forms/nl/inertia-forms.php
+return [
+    'fields' => [
+        'composer' => [
+            'required' => 'Schrijf een bericht of voeg een bestand toe.',
+        ],
+    ],
+];
+```
+
+### Frontend: component text
+
+Buttons, placeholders, empty states, aria labels, calendar names and the other text the components render are translated in the browser. Call `setTranslations()` once, for example in your app entry file. It merges your text over the English defaults, and calling it again (say, after the user switches language) updates every rendered form.
+
+```ts
+import { setTranslations, type TranslationValue } from '@erag/inertia-forms-react'; // or -vue / -svelte
+
+setTranslations({
+    action_cancel: 'Annuleren',
+    action_delete: 'Verwijderen',
+    file_upload_click_to_upload: 'Klik om te uploaden',
+    option_no_results: 'Geen resultaten gevonden',
+    repeater_add: ':name toevoegen',
+});
+```
+
+Replacement tokens work like Laravel's: `:name` is replaced as is, `:Name` with a capital first letter and `:NAME` in upper case. A value can also be a function that receives the parameters, which is handy for number formatting or plural rules:
+
+```ts
+const wizardProgress: TranslationValue = ({ current, total }) => {
+    const number = new Intl.NumberFormat('nl-NL');
+    return `Stap ${number.format(Number(current))} van ${number.format(Number(total))}`;
+};
+
+setTranslations({ wizard_progress: wizardProgress });
+```
+
+`resetTranslations()` goes back to English, a key you leave out keeps its English default, and a key the package does not know shows the key itself. The full list of keys, their English defaults and parameters is in [`packages/core/TRANSLATION_KEYS.md`](packages/core/TRANSLATION_KEYS.md).
+
+Built-in button text such as the wizard's Continue / Back, the Composer's Send, and the add buttons of Repeater, Blocks and KeyValue comes from these frontend keys unless you set your own in PHP (`addActionLabel()`, `sendLabel()`, `wizard(nextLabel: ...)`).
+
+### Your own copy
+
+Labels, placeholders, help text, step titles and other text you write in the form class belong to your app. Translate them with your app's own keys:
+
+```php
+TextInput::make('email')
+    ->label(__('forms.contact.email'))
+    ->placeholder(__('forms.contact.email_placeholder'));
+```
+
+---
+
 ## Documentation
 
 The documentation covers installation, form definitions, validation, conditional fields, authorization, layouts, custom components, and more.
@@ -186,3 +263,9 @@ If the package saves you time or makes your development workflow easier, you can
 **[💖 Sponsor on GitHub](https://github.com/sponsors/eramitgupta)**
 
 Your support helps me continue maintaining and improving this project for the Laravel community.
+
+---
+
+## License
+
+MIT License © [eramitgupta](https://github.com/eramitgupta)
