@@ -1,3 +1,4 @@
+import { translate } from './i18n';
 import type { LinkSchema, LinkValue } from './types';
 
 export interface LinkParts {
@@ -53,5 +54,7 @@ export function linkSchemeHint(
 ): string | null {
     if (!field.requireScheme || url.trim() === '' || hasUrlScheme(url)) return null;
     const scheme = field.allowedSchemes[0] ?? 'https';
-    return `Start with ${scheme}${/^(https?|ftps?|wss?)$/.test(scheme) ? '://' : ':'}`;
+    return translate('link_scheme_hint', {
+        scheme: `${scheme}${/^(https?|ftps?|wss?)$/.test(scheme) ? '://' : ':'}`,
+    });
 }

@@ -47,9 +47,9 @@ describe('calendar', () => {
     });
 
     it('formats display text with an optional time', () => {
-        expect(formatDisplayDate('2026-10-04', 'en-US')).toBe('Oct 4, 2026');
-        expect(formatDisplayDate('2026-10-04T09:15', 'en-US')).toBe('Oct 4, 2026, 09:15');
-        expect(formatDisplayDate('', 'en-US')).toBe('');
+        expect(formatDisplayDate('2026-10-04')).toBe('Oct 4, 2026');
+        expect(formatDisplayDate('2026-10-04T09:15')).toBe('Oct 4, 2026, 09:15');
+        expect(formatDisplayDate('')).toBe('');
     });
 
     it('checks min and max limits', () => {

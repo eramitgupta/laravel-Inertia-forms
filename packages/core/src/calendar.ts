@@ -1,3 +1,5 @@
+import { translate } from './i18n';
+
 /**
  * Date helpers for the calendar popover. Dates travel as `YYYY-MM-DD` strings
  * (and `YYYY-MM-DDTHH:MM` with time) so they compare correctly as text.
@@ -66,31 +68,81 @@ export function monthGrid(month: Date, firstDayOfWeek = 0): CalendarDay[] {
     });
 }
 
-export function weekdayLabels(firstDayOfWeek = 0, locale?: string): string[] {
-    const sunday = new Date(2024, 0, 7);
-    return Array.from({ length: 7 }, (_, index) => {
-        const date = new Date(2024, 0, sunday.getDate() + ((firstDayOfWeek + index) % 7));
-        return new Intl.DateTimeFormat(locale, { weekday: 'short' }).format(date).slice(0, 2);
+const MONTHS = [
+    'january',
+    'february',
+    'march',
+    'april',
+    'may',
+    'june',
+    'july',
+    'august',
+    'september',
+    'october',
+    'november',
+    'december',
+] as const;
+
+const WEEKDAYS = [
+    'sunday',
+    'monday',
+    'tuesday',
+    'wednesday',
+    'thursday',
+    'friday',
+    'saturday',
+] as const;
+
+/** Translated month name, e.g. `January` (`calendar_month_*`) or `Jan` when `short`. */
+export function monthName(month: number, short = false): string {
+    const name = MONTHS[((month % 12) + 12) % 12]!;
+    return translate(short ? `calendar_month_short_${name}` : `calendar_month_${name}`);
+}
+
+/** Translated weekday name (0 = Sunday), e.g. `Monday` or `Mo` when `short`. */
+export function weekdayName(day: number, short = false): string {
+    const name = WEEKDAYS[((day % 7) + 7) % 7]!;
+    return translate(short ? `calendar_weekday_short_${name}` : `calendar_weekday_${name}`);
+}
+
+/** Column headings of the month grid, starting on `firstDayOfWeek`. */
+export function weekdayLabels(firstDayOfWeek = 0): string[] {
+    return Array.from({ length: 7 }, (_, index) => weekdayName(firstDayOfWeek + index, true));
+}
+
+/** Title of a month, like `October 2026`. */
+export function monthLabel(month: Date): string {
+    return translate('calendar_month_year', {
+        month: monthName(month.getMonth()),
+        year: month.getFullYear(),
     });
 }
 
-export function monthLabel(month: Date, locale?: string): string {
-    return new Intl.DateTimeFormat(locale, { month: 'long', year: 'numeric' }).format(month);
+/** Screen reader text of a calendar day, like `Sunday, October 4, 2026`. */
+export function calendarDayLabel(iso: string): string {
+    const date = parseIsoDate(iso);
+    if (!date) return iso;
+    return translate('calendar_day_label', {
+        weekday: weekdayName(date.getDay()),
+        month: monthName(date.getMonth()),
+        day: date.getDate(),
+        year: date.getFullYear(),
+    });
 }
 
 /**
  * Human text for an input value, like `Oct 4, 2026` or `Oct 4, 2026, 09:15`.
  */
-export function formatDisplayDate(value: string | null | undefined, locale?: string): string {
+export function formatDisplayDate(value: string | null | undefined): string {
     const date = parseIsoDate(value);
     if (!date) return '';
-    const text = new Intl.DateTimeFormat(locale, {
-        month: 'short',
-        day: 'numeric',
-        year: 'numeric',
-    }).format(date);
+    const text = translate('date_display', {
+        month: monthName(date.getMonth(), true),
+        day: date.getDate(),
+        year: date.getFullYear(),
+    });
     const time = timePart(value);
-    return time ? `${text}, ${time}` : text;
+    return time ? translate('date_time', { date: text, time }) : text;
 }
 
 export function isOutsideLimits(iso: string, min?: string | null, max?: string | null): boolean {

@@ -1,4 +1,5 @@
-import type { ComposerValue } from './types';
+import { translate } from './i18n';
+import type { ComposerSchema, ComposerValue } from './types';
 
 /**
  * A Composer value in its full shape, whatever was stored: a plain string
@@ -52,4 +53,9 @@ export function composerHasRoom(field: { maxFiles: number | null }, count: numbe
 /** Whether a drag carries files (not text being dragged into the textarea). */
 export function dragHasFiles(transfer: { types?: ArrayLike<string> | null } | null): boolean {
     return Array.from(transfer?.types ?? []).includes('Files');
+}
+
+/** The send button text: the field's own `sendLabel`, or the translation. */
+export function composerSendLabel(field: Pick<ComposerSchema, 'sendLabel'>): string {
+    return field.sendLabel ?? translate('composer_send');
 }

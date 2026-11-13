@@ -1,3 +1,4 @@
+import { translate } from './i18n';
 import { blockItems } from './tags';
 import type { BlockItem, BlocksSchema } from './types';
 
@@ -52,4 +53,16 @@ export function builderFieldName(field: BlocksSchema, index: number, name: strin
     return isRepeater(field)
         ? `${field.name}.${index}.${name}`
         : `${field.name}.${index}.data.${name}`;
+}
+
+/**
+ * Text of the add button: the field's own `addActionLabel`, else `Add block`
+ * (`blocks_add`) or `Add link` for a Repeater of links (`repeater_add`).
+ */
+export function builderAddLabel(
+    field: Pick<BlocksSchema, 'component' | 'addActionLabel' | 'blocks'>,
+): string {
+    if (field.addActionLabel) return field.addActionLabel;
+    if (!isRepeater(field)) return translate('blocks_add');
+    return translate('repeater_add', { name: (field.blocks[0]?.label ?? '').toLowerCase() });
 }

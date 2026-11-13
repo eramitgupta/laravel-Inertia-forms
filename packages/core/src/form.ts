@@ -1,3 +1,4 @@
+import { translate } from './i18n';
 import { isVisible, normalize } from './visibility';
 import type { FieldOption, FieldSchema, FieldsetSchema, FormErrors, FormSchema } from './types';
 
@@ -71,9 +72,9 @@ export function scrollToFirstError(root: HTMLElement | null): void {
 }
 
 export function formatFileSize(bytes: number): string {
-    if (bytes < 1024) return `${bytes} B`;
-    if (bytes < 1024 * 1024) return `${Math.round(bytes / 1024)} KB`;
-    return `${(bytes / 1024 / 1024).toFixed(1)} MB`;
+    if (bytes < 1024) return translate('file_size_bytes', { size: bytes });
+    if (bytes < 1024 * 1024) return translate('file_size_kb', { size: Math.round(bytes / 1024) });
+    return translate('file_size_mb', { size: (bytes / 1024 / 1024).toFixed(1) });
 }
 
 /**
@@ -91,12 +92,20 @@ export function fileUploadHint(field: {
         .map((item) => item.trim())
         .filter((item) => item.startsWith('.'))
         .map((item) => item.slice(1).toUpperCase());
-    const types = extensions.length ? extensions.join(', ') : field.image ? 'Images' : null;
+    const types = extensions.length
+        ? extensions.join(', ')
+        : field.image
+          ? translate('file_upload_images')
+          : null;
 
     return [
         types,
-        field.maxSize ? `up to ${formatFileSize(field.maxSize * 1024)}` : null,
-        field.multiple && field.maxFiles ? `max ${field.maxFiles} files` : null,
+        field.maxSize
+            ? translate('file_upload_max_size', { size: formatFileSize(field.maxSize * 1024) })
+            : null,
+        field.multiple && field.maxFiles
+            ? translate('file_upload_max_files', { count: field.maxFiles })
+            : null,
     ]
         .filter(Boolean)
         .join(' · ');

@@ -2,6 +2,7 @@ export * from './calendar';
 export * from './classes';
 export * from './color';
 export * from './form';
+export * from './i18n';
 export * from './icons';
 export * from './paths';
 export * from './remote';

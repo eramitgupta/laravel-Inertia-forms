@@ -152,11 +152,14 @@ export interface TagsInputSchema extends BaseFieldSchema {
 
 export interface KeyValueSchema extends BaseFieldSchema {
     component: 'KeyValue';
-    keyLabel: string;
-    valueLabel: string;
+    /** `null` uses the `key_value_key` translation. */
+    keyLabel: string | null;
+    /** `null` uses the `key_value_value` translation. */
+    valueLabel: string | null;
     keyPlaceholder: string | null;
     valuePlaceholder: string | null;
-    addActionLabel: string;
+    /** `null` uses the `key_value_add` translation. */
+    addActionLabel: string | null;
     reorderable: boolean;
     addable: boolean;
     deletable: boolean;
@@ -179,7 +182,8 @@ export interface BlockSchema {
 export interface BlocksSchema extends BaseFieldSchema {
     component: 'Blocks' | 'Repeater';
     blocks: BlockSchema[];
-    addActionLabel: string;
+    /** `null` uses the `blocks_add` / `repeater_add` translation. */
+    addActionLabel: string | null;
     reorderable: boolean;
     addable: boolean;
     deletable: boolean;
@@ -272,7 +276,8 @@ export interface ComposerSchema extends BaseFieldSchema {
     maxSize: number | null;
     maxLength: number | null;
     submitOnEnter: boolean;
-    sendLabel: string;
+    /** `null` uses the `composer_send` translation. */
+    sendLabel: string | null;
     rows: number;
     quickReplies: string[];
 }
@@ -331,8 +336,10 @@ export interface FieldsetSchema {
 }
 
 export interface WizardSettings {
-    nextLabel: string;
-    backLabel: string;
+    /** `null` uses the `wizard_next` translation. */
+    nextLabel: string | null;
+    /** `null` uses the `wizard_back` translation. */
+    backLabel: string | null;
     /** Package endpoint that checks one step. `null` skips the server check. */
     validateUrl: string | null;
     token: string | null;

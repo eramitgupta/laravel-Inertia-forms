@@ -1,4 +1,5 @@
-import type { BlockSchema, BlockItem, KeyValueRow } from './types';
+import { translate } from './i18n';
+import type { BlockSchema, BlockItem, KeyValueRow, KeyValueSchema } from './types';
 
 /**
  * Split typed or pasted text into new tags, skipping blanks and duplicates.
@@ -32,6 +33,20 @@ export function keyValueRows(value: unknown): KeyValueRow[] {
 }
 
 /**
+ * Column headings and add button text of a KeyValue field: the field's own
+ * labels, or the translations.
+ */
+export function keyValueLabels(
+    field: Pick<KeyValueSchema, 'keyLabel' | 'valueLabel' | 'addActionLabel'>,
+): { key: string; value: string; add: string } {
+    return {
+        key: field.keyLabel ?? translate('key_value_key'),
+        value: field.valueLabel ?? translate('key_value_value'),
+        add: field.addActionLabel ?? translate('key_value_add'),
+    };
+}
+
+/**
  * Normalize a Blocks value into blocks with a type and a data object.
  */
 export function blockItems(value: unknown): BlockItem[] {
@@ -48,13 +63,14 @@ export function blockItems(value: unknown): BlockItem[] {
 }
 
 /**
- * Header title of a block: its `titleFrom()` field when filled in, else "Label N".
+ * Header title of a block: its `titleFrom()` field when filled in, else "Label N"
+ * (`collection_item`).
  */
 export function blockTitle(block: BlockSchema, item: BlockItem, index: number): string {
     const fromField = block.titleFrom ? item.data[block.titleFrom] : null;
     return typeof fromField === 'string' && fromField.trim() !== ''
         ? fromField.trim()
-        : `${block.label} ${index + 1}`;
+        : translate('collection_item', { label: block.label, number: index + 1 });
 }
 
 /**

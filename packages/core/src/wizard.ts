@@ -1,5 +1,6 @@
 import { classes, cx } from './classes';
 import { errorKeysFor } from './form';
+import { translate } from './i18n';
 import { icons, type IconName } from './icons';
 import { csrfHeaders } from './remote';
 import { isVisible } from './visibility';
@@ -78,7 +79,22 @@ export function wizardStepIcon(fieldset: FieldsetSchema): IconName | null {
 }
 
 export function wizardStepLabel(fieldset: FieldsetSchema, index: number): string {
-    return fieldset.legend || `Step ${index + 1}`;
+    return fieldset.legend || translate('wizard_step', { number: index + 1 });
+}
+
+/** Text above the compact progress bar, e.g. `Step 2 of 3` (`current` is zero-based). */
+export function wizardProgressText(current: number, total: number): string {
+    return translate('wizard_progress', { current: current + 1, total });
+}
+
+/** The wizard's Continue button text: the form's own, or the translation. */
+export function wizardNextLabel(wizard: Pick<WizardSettings, 'nextLabel'>): string {
+    return wizard.nextLabel ?? translate('wizard_next');
+}
+
+/** The wizard's Back button text: the form's own, or the translation. */
+export function wizardBackLabel(wizard: Pick<WizardSettings, 'backLabel'>): string {
+    return wizard.backLabel ?? translate('wizard_back');
 }
 
 /** Width of the compact progress bar, e.g. `67%` on step 2 of 3. */
