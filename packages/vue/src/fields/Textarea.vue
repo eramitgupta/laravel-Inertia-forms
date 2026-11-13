@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { computed, ref, watchPostEffect } from 'vue';
 import { classes, cx, type TextareaSchema } from '../../../core/src';
+import { useTranslate } from '../i18n';
 import type { FieldComponentEmits, FieldComponentProps } from '../types';
 
 const props = defineProps<FieldComponentProps<TextareaSchema>>();
 const emit = defineEmits<FieldComponentEmits>();
 
+const t = useTranslate();
 const textarea = ref<HTMLTextAreaElement | null>(null);
 const text = computed(() =>
     props.modelValue === null || props.modelValue === undefined ? '' : String(props.modelValue),
@@ -47,6 +49,10 @@ function input(event: Event) {
         @input="input"
     />
     <p v-if="field.showCharacterCount" :class="classes.counter">
-        {{ text.length }}{{ field.maxLength ? ` / ${field.maxLength}` : '' }}
+        {{
+            field.maxLength
+                ? t('form_character_count', { count: text.length, max: field.maxLength })
+                : text.length
+        }}
     </p>
 </template>

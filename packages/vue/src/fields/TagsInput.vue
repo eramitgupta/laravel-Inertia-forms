@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import { addTags, classes, cx, moveItem, type TagsInputSchema } from '../../../core/src';
+import { useTranslate } from '../i18n';
 import Icon from '../Icon.vue';
 import type { FieldComponentEmits, FieldComponentProps } from '../types';
 import { usePopover } from '../usePopover';
@@ -12,6 +13,7 @@ import { usePopover } from '../usePopover';
 const props = defineProps<FieldComponentProps<TagsInputSchema>>();
 const emit = defineEmits<FieldComponentEmits>();
 
+const t = useTranslate();
 const { root, panel, open, setOpen, panelClass } = usePopover();
 const input = ref<HTMLInputElement | null>(null);
 const text = ref('');
@@ -120,7 +122,7 @@ function dragover(event: DragEvent, index: number) {
                 role="list"
                 v-if="tags.length > 0"
                 :class="cx(classes.chips, 'flex-none')"
-                :aria-label="`${field.label} tags`"
+                :aria-label="t('tags_list', { label: field.label })"
             >
                 <div
                     role="listitem"
@@ -143,7 +145,7 @@ function dragover(event: DragEvent, index: number) {
                         v-if="!locked"
                         type="button"
                         :class="classes.chipRemove"
-                        :aria-label="`Remove ${tag}`"
+                        :aria-label="t('tags_remove', { name: tag })"
                         @click.stop="remove(tag)"
                     >
                         <Icon name="x" class="size-3" />
@@ -167,7 +169,7 @@ function dragover(event: DragEvent, index: number) {
                 :aria-describedby="describedBy"
                 :value="text"
                 :maxlength="field.maxTagLength ?? undefined"
-                :placeholder="tags.length ? '' : (field.placeholder ?? 'Type and press Enter')"
+                :placeholder="tags.length ? '' : (field.placeholder ?? t('tags_placeholder'))"
                 :disabled="locked"
                 :autofocus="field.autofocus"
                 :class="classes.triggerSearch"
@@ -183,7 +185,7 @@ function dragover(event: DragEvent, index: number) {
             :id="listId"
             ref="panel"
             role="listbox"
-            :aria-label="`${field.label} suggestions`"
+            :aria-label="t('tags_suggestions', { label: field.label })"
             :class="panelClass(classes.comboboxList)"
         >
             <div

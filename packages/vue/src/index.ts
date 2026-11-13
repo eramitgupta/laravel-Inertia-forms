@@ -29,6 +29,22 @@ export { default as TextInput } from './fields/TextInput.vue';
 export { default as TimePicker } from './fields/TimePicker.vue';
 export { default as Toggle } from './fields/Toggle.vue';
 export { isVisible } from '../../core/src/visibility';
+export {
+    defaultTranslations,
+    getTranslations,
+    resetTranslations,
+    setTranslations,
+    subscribeTranslations,
+    translate,
+    translateParts,
+    translationsVersion,
+    type TranslationKey,
+    type TranslationParams,
+    type TranslationPart,
+    type Translations,
+    type TranslationValue,
+} from '../../core/src/i18n';
+export { useTranslate } from './i18n';
 export type {
     BeforeSubmitHelpers,
     FieldComponent,

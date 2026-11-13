@@ -11,6 +11,7 @@ import { computed, onMounted, ref, watch } from 'vue';
 import {
     blockDefaults,
     blockTitle,
+    builderAddLabel,
     builderFieldName,
     builderItems,
     builderValue,
@@ -29,6 +30,7 @@ import {
 } from '../../../core/src';
 import { useFormContext } from '../context';
 import FieldRenderer, { builtInComponents } from '../FieldRenderer.vue';
+import { translated, useTranslate } from '../i18n';
 import Icon from '../Icon.vue';
 import type { FieldComponentEmits, FieldComponentProps } from '../types';
 import { usePopover } from '../usePopover';
@@ -40,6 +42,8 @@ import { usePopover } from '../usePopover';
 const props = defineProps<FieldComponentProps<BlocksSchema>>();
 const emit = defineEmits<FieldComponentEmits>();
 
+const t = useTranslate();
+const titleOf = translated(blockTitle);
 const form = useFormContext();
 const root = ref<HTMLDivElement | null>(null);
 const {
@@ -69,6 +73,7 @@ const keys = computed(() => {
 });
 const collapsed = ref<Set<number>>(new Set(props.field.collapsed ? keys.value : []));
 
+const addLabel = computed(translated(() => builderAddLabel(props.field)));
 const full = computed(
     () => props.field.maxItems !== null && items.value.length >= props.field.maxItems,
 );
@@ -101,6 +106,7 @@ const cards = computed(() =>
                 block,
                 isCollapsed: props.field.collapsible && collapsed.value.has(uid),
                 bodyId: `${props.id}-block-${uid}`,
+                name: t('collection_item', { label: block.label, number: index + 1 }),
                 fields: block.fields.filter(
                     (inner) =>
                         inner.component !== 'Submit' && isVisible(inner.visibility, item.data),
@@ -256,11 +262,11 @@ function setNested(name: string, next: unknown) {
             :class="classes.builderCollapseAll"
             @click="toggleAll"
         >
-            {{ allCollapsed ? 'Expand all' : 'Collapse all' }}
+            {{ allCollapsed ? t('collection_expand_all') : t('collection_collapse_all') }}
         </button>
 
         <div v-if="items.length === 0" :class="classes.builderEmpty">
-            {{ repeater ? 'No items yet.' : 'No blocks yet.' }}
+            {{ repeater ? t('repeater_empty') : t('blocks_empty') }}
         </div>
 
         <div
@@ -302,7 +308,7 @@ function setNested(name: string, next: unknown) {
                     <span :class="classes.blockHeading">
                         <span :class="classes.blockTitleRow">
                             <span :class="classes.blockTitle">
-                                {{ blockTitle(card.block, card.item, card.index) }}
+                                {{ titleOf(card.block, card.item, card.index) }}
                             </span>
                             <span v-if="!repeater" :class="classes.blockBadge">{{
                                 card.block.label
@@ -319,7 +325,7 @@ function setNested(name: string, next: unknown) {
                             type="button"
                             data-move="up"
                             :class="classes.kvButton"
-                            :aria-label="`Move ${card.block.label} ${card.index + 1} up`"
+                            :aria-label="t('collection_move_up', { name: card.name })"
                             :disabled="locked || card.index === 0"
                             @click="move(card.index, -1)"
                         >
@@ -329,7 +335,7 @@ function setNested(name: string, next: unknown) {
                             type="button"
                             data-move="down"
                             :class="classes.kvButton"
-                            :aria-label="`Move ${card.block.label} ${card.index + 1} down`"
+                            :aria-label="t('collection_move_down', { name: card.name })"
                             :disabled="locked || card.index === items.length - 1"
                             @click="move(card.index, 1)"
                         >
@@ -340,7 +346,7 @@ function setNested(name: string, next: unknown) {
                         v-if="field.deletable"
                         type="button"
                         :class="classes.kvRemove"
-                        :aria-label="`Delete ${card.block.label} ${card.index + 1}`"
+                        :aria-label="t('action_delete_field', { name: card.name })"
                         :disabled="
                             locked || (field.minItems !== null && items.length <= field.minItems)
                         "
@@ -383,13 +389,13 @@ function setNested(name: string, next: unknown) {
                 :disabled="locked || full"
                 @click="openMenu"
             >
-                <Icon name="plus" class="size-4" />{{ field.addActionLabel }}
+                <Icon name="plus" class="size-4" />{{ addLabel }}
             </button>
             <div
                 v-if="hasMenu && menuOpen"
                 ref="menuPanel"
                 role="menu"
-                :aria-label="field.addActionLabel"
+                :aria-label="addLabel"
                 :class="panelClass(classes.builderMenu)"
                 @keydown="menuKeydown"
             >

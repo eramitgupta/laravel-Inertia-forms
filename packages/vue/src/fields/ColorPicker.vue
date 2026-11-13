@@ -11,6 +11,7 @@ import {
     type ColorPickerSchema,
     type Hsl,
 } from '../../../core/src';
+import { useTranslate } from '../i18n';
 import Icon from '../Icon.vue';
 import type { FieldComponentEmits, FieldComponentProps } from '../types';
 import { usePopover } from '../usePopover';
@@ -27,6 +28,7 @@ interface EyeDropperWindow {
 const props = defineProps<FieldComponentProps<ColorPickerSchema>>();
 const emit = defineEmits<FieldComponentEmits>();
 
+const t = useTranslate();
 const { root, panel, open, setOpen, panelClass } = usePopover();
 const color = computed(() => (typeof props.modelValue === 'string' ? props.modelValue : ''));
 const hex = computed(() => normalizeHex(color.value));
@@ -55,9 +57,19 @@ onBeforeUnmount(() => clearTimeout(copiedTimer));
 
 const sliders = computed<Array<{ key: keyof Hsl; label: string; max: number; background: string }>>(
     () => [
-        { key: 'h', label: 'Hue', max: 360, background: hueGradient },
-        { key: 's', label: 'Saturation', max: 100, background: saturationGradient(hsl.value) },
-        { key: 'l', label: 'Lightness', max: 100, background: lightnessGradient(hsl.value) },
+        { key: 'h', label: t('color_hue'), max: 360, background: hueGradient },
+        {
+            key: 's',
+            label: t('color_saturation'),
+            max: 100,
+            background: saturationGradient(hsl.value),
+        },
+        {
+            key: 'l',
+            label: t('color_lightness'),
+            max: 100,
+            background: lightnessGradient(hsl.value),
+        },
     ],
 );
 
@@ -144,7 +156,7 @@ function copy() {
                             ? `${classes.triggerValue} font-mono uppercase`
                             : classes.triggerPlaceholder
                     "
-                    >{{ color || field.placeholder || 'Pick a color' }}</span
+                    >{{ color || field.placeholder || t('color_placeholder') }}</span
                 >
             </button>
             <ClearButton
@@ -196,7 +208,7 @@ function copy() {
                         placeholder="#000000"
                         :maxlength="7"
                         :spellcheck="false"
-                        :aria-label="`${field.label} hex code`"
+                        :aria-label="t('color_hex_code', { label: field.label })"
                         :class="classes.colorHex"
                         @input="typeHex"
                         @blur="text = color"
@@ -206,7 +218,7 @@ function copy() {
                         v-if="eyeDropper"
                         type="button"
                         :class="classes.colorTool"
-                        aria-label="Pick a color from the screen"
+                        :aria-label="t('color_eyedropper')"
                         @click="pickFromScreen"
                     >
                         <Icon name="eyedropper" class="size-4" />
@@ -214,7 +226,7 @@ function copy() {
                     <button
                         type="button"
                         :class="classes.colorTool"
-                        :aria-label="copied ? 'Copied' : 'Copy hex code'"
+                        :aria-label="copied ? t('action_copied') : t('color_copy_hex')"
                         :disabled="!hex"
                         @click="copy"
                     >

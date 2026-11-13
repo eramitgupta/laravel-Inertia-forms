@@ -2,6 +2,7 @@
 import { computed, ref, watch } from 'vue';
 import {
     addMonths,
+    calendarDayLabel,
     classes,
     isOutsideLimits,
     monthGrid,
@@ -13,6 +14,7 @@ import {
     weekdayLabels,
     type CalendarDay,
 } from '../../../core/src';
+import { translated, useTranslate } from '../i18n';
 import Icon from '../Icon.vue';
 
 /**
@@ -40,13 +42,16 @@ function shift(iso: string, days: number): string {
     return toIsoDate(new Date(date.getFullYear(), date.getMonth(), date.getDate() + days));
 }
 
+const t = useTranslate();
+const titleOf = translated(monthLabel);
+const dayLabel = translated(calendarDayLabel);
 const root = ref<HTMLDivElement | null>(null);
 const focusIso = ref<string | null>(null);
 const today = todayIso();
 const visible = computed(() =>
     Array.from({ length: props.months }, (_, index) => addMonths(props.view, index)),
 );
-const weekdays = computed(() => weekdayLabels(props.firstDayOfWeek));
+const weekdays = computed(translated(() => weekdayLabels(props.firstDayOfWeek)));
 const visibleDays = computed(() =>
     visible.value.flatMap((month) =>
         monthGrid(month, props.firstDayOfWeek)
@@ -120,7 +125,7 @@ function keydown(event: KeyboardEvent) {
                 <button
                     type="button"
                     :class="classes.calendarNav"
-                    aria-label="Previous year"
+                    :aria-label="t('calendar_previous_year')"
                     @click="emit('view', addMonths(view, -12))"
                 >
                     <Icon name="chevronsLeft" class="size-4" />
@@ -128,20 +133,20 @@ function keydown(event: KeyboardEvent) {
                 <button
                     type="button"
                     :class="classes.calendarNav"
-                    aria-label="Previous month"
+                    :aria-label="t('calendar_previous_month')"
                     @click="emit('view', addMonths(view, -1))"
                 >
                     <Icon name="chevronLeft" class="size-4" />
                 </button>
             </span>
             <span v-if="months === 1" :class="classes.calendarTitle" aria-live="polite">{{
-                monthLabel(view)
+                titleOf(view)
             }}</span>
             <span class="flex gap-1">
                 <button
                     type="button"
                     :class="classes.calendarNav"
-                    aria-label="Next month"
+                    :aria-label="t('calendar_next_month')"
                     @click="emit('view', addMonths(view, 1))"
                 >
                     <Icon name="chevronRight" class="size-4" />
@@ -149,7 +154,7 @@ function keydown(event: KeyboardEvent) {
                 <button
                     type="button"
                     :class="classes.calendarNav"
-                    aria-label="Next year"
+                    :aria-label="t('calendar_next_year')"
                     @click="emit('view', addMonths(view, 12))"
                 >
                     <Icon name="chevronsRight" class="size-4" />
@@ -161,9 +166,9 @@ function keydown(event: KeyboardEvent) {
                 v-for="month in visible"
                 :key="month.toISOString()"
                 role="grid"
-                :aria-label="monthLabel(month)"
+                :aria-label="titleOf(month)"
             >
-                <p v-if="months > 1" :class="classes.calendarMonthTitle">{{ monthLabel(month) }}</p>
+                <p v-if="months > 1" :class="classes.calendarMonthTitle">{{ titleOf(month) }}</p>
                 <div :class="classes.calendarGrid">
                     <span
                         v-for="(weekday, index) in weekdays"
@@ -184,7 +189,7 @@ function keydown(event: KeyboardEvent) {
                             (day.inMonth && !isDaySelected(day) && isInRange(day.iso)) || undefined
                         "
                         :aria-pressed="isDaySelected(day)"
-                        :aria-label="parseIsoDate(day.iso)!.toDateString()"
+                        :aria-label="dayLabel(day.iso)"
                         :tabindex="day.inMonth && day.iso === tabIso ? 0 : -1"
                         :disabled="isOutsideLimits(day.iso, minDate, maxDate)"
                         :class="classes.calendarDay"

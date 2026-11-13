@@ -15,6 +15,7 @@ import {
     parseTime,
     secondOptions,
 } from '../../../core/src';
+import { useTranslate } from '../i18n';
 
 type Part = TimePart;
 
@@ -35,13 +36,14 @@ const props = defineProps<{
  */
 const emit = defineEmits<{ change: [time: string, part: TimePart] }>();
 
+const t = useTranslate();
 const root = ref<HTMLDivElement | null>(null);
 const parts = computed(() => parseTime(props.value));
 const columns = computed<Array<{ part: Part; title: string; options: string[] }>>(() => [
-    { part: 'hour', title: 'Hour', options: hourOptions() },
-    { part: 'minute', title: 'Min', options: minuteOptions(props.minuteStep) },
+    { part: 'hour', title: t('time_hour'), options: hourOptions() },
+    { part: 'minute', title: t('time_minute'), options: minuteOptions(props.minuteStep) },
     ...(props.withSeconds
-        ? [{ part: 'second' as const, title: 'Sec', options: secondOptions() }]
+        ? [{ part: 'second' as const, title: t('time_second'), options: secondOptions() }]
         : []),
 ]);
 

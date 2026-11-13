@@ -22,6 +22,7 @@ import {
     todayIso,
     type DatePickerSchema,
 } from '../../../core/src';
+import { translated, useTranslate } from '../i18n';
 import Icon from '../Icon.vue';
 import type { FieldComponentEmits, FieldComponentProps } from '../types';
 import { usePopover } from '../usePopover';
@@ -36,6 +37,8 @@ import TimeColumns, { type TimePart } from './TimeColumns.vue';
 const props = defineProps<FieldComponentProps<DatePickerSchema>>();
 const emit = defineEmits<FieldComponentEmits>();
 
+const t = useTranslate();
+const displayDate = translated(formatDisplayDate);
 const { root, panel, open, setOpen, panelClass } = usePopover();
 const view = ref(
     monthStart(props.field.range ? toRange(props.modelValue).start : (props.modelValue as string)),
@@ -50,12 +53,17 @@ const hasValue = computed(() =>
 const display = computed(() =>
     props.field.range
         ? range.value.start
-            ? `${formatDisplayDate(range.value.start)} – ${range.value.end ? formatDisplayDate(range.value.end) : '…'}`
+            ? t('date_range', {
+                  start: displayDate(range.value.start),
+                  end: range.value.end ? displayDate(range.value.end) : '…',
+              })
             : ''
-        : formatDisplayDate(single.value),
+        : displayDate(single.value),
 );
 const placeholder = computed(
-    () => props.field.placeholder ?? (props.field.range ? 'Select dates' : 'Select a date'),
+    () =>
+        props.field.placeholder ??
+        t(props.field.range ? 'date_range_placeholder' : 'date_placeholder'),
 );
 
 function toggle() {
@@ -167,8 +175,12 @@ function today() {
                 />
             </div>
             <div :class="classes.popoverFooter">
-                <button type="button" :class="classes.popoverAction" @click="today">Today</button>
-                <button type="button" :class="classes.popoverAction" @click="clear">Clear</button>
+                <button type="button" :class="classes.popoverAction" @click="today">
+                    {{ t('date_today') }}
+                </button>
+                <button type="button" :class="classes.popoverAction" @click="clear">
+                    {{ t('action_clear') }}
+                </button>
             </div>
         </div>
     </div>

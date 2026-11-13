@@ -3,11 +3,13 @@ import { computed, ref } from 'vue';
 import {
     classes,
     cx,
+    keyValueLabels,
     keyValueRows,
     moveItem,
     type KeyValueRow,
     type KeyValueSchema,
 } from '../../../core/src';
+import { translated, useTranslate } from '../i18n';
 import Icon from '../Icon.vue';
 import type { FieldComponentEmits, FieldComponentProps } from '../types';
 
@@ -18,6 +20,8 @@ import type { FieldComponentEmits, FieldComponentProps } from '../types';
 const props = defineProps<FieldComponentProps<KeyValueSchema>>();
 const emit = defineEmits<FieldComponentEmits>();
 
+const t = useTranslate();
+const labels = computed(translated(() => keyValueLabels(props.field)));
 const table = ref<HTMLDivElement | null>(null);
 const dragIndex = ref<number | null>(null);
 const rows = computed(() => keyValueRows(props.modelValue));
@@ -26,6 +30,10 @@ const full = computed(
     () => props.field.maxItems !== null && rows.value.length >= props.field.maxItems,
 );
 const grid = computed(() => (props.field.reorderable ? classes.kvGrid : classes.kvGridPlain));
+
+function rowName(index: number): string {
+    return t('key_value_row', { number: index + 1 });
+}
 
 function update(next: KeyValueRow[]) {
     emit('update:modelValue', next);
@@ -93,11 +101,13 @@ function dragover(event: DragEvent, index: number) {
         >
             <div :class="cx(grid, classes.kvHeader)" aria-hidden="true">
                 <span v-if="field.reorderable" class="w-[5.5rem]" />
-                <span>{{ field.keyLabel }}</span>
-                <span>{{ field.valueLabel }}</span>
+                <span>{{ labels.key }}</span>
+                <span>{{ labels.value }}</span>
                 <span class="w-7" />
             </div>
-            <div v-if="rows.length === 0" :class="classes.kvEmpty">No entries yet.</div>
+            <div v-if="rows.length === 0" :class="classes.kvEmpty">
+                {{ t('key_value_empty') }}
+            </div>
             <div
                 v-for="(row, index) in rows"
                 :key="index"
@@ -121,7 +131,7 @@ function dragover(event: DragEvent, index: number) {
                         type="button"
                         data-move="up"
                         :class="classes.kvButton"
-                        :aria-label="`Move row ${index + 1} up`"
+                        :aria-label="t('collection_move_up', { name: rowName(index) })"
                         :disabled="locked || index === 0"
                         @click="move(index, -1)"
                     >
@@ -131,7 +141,7 @@ function dragover(event: DragEvent, index: number) {
                         type="button"
                         data-move="down"
                         :class="classes.kvButton"
-                        :aria-label="`Move row ${index + 1} down`"
+                        :aria-label="t('collection_move_down', { name: rowName(index) })"
                         :disabled="locked || index === rows.length - 1"
                         @click="move(index, 1)"
                     >
@@ -143,7 +153,7 @@ function dragover(event: DragEvent, index: number) {
                     data-part="key"
                     :value="row.key"
                     :placeholder="field.keyPlaceholder ?? undefined"
-                    :aria-label="`${field.keyLabel} ${index + 1}`"
+                    :aria-label="t('key_value_cell', { label: labels.key, number: index + 1 })"
                     :aria-invalid="error ? true : undefined"
                     :disabled="disabled"
                     :readonly="field.readonly || !field.editableKeys"
@@ -155,7 +165,7 @@ function dragover(event: DragEvent, index: number) {
                     data-part="value"
                     :value="row.value"
                     :placeholder="field.valuePlaceholder ?? undefined"
-                    :aria-label="`${field.valueLabel} ${index + 1}`"
+                    :aria-label="t('key_value_cell', { label: labels.value, number: index + 1 })"
                     :aria-invalid="error ? true : undefined"
                     :disabled="disabled"
                     :readonly="field.readonly"
@@ -166,7 +176,7 @@ function dragover(event: DragEvent, index: number) {
                     v-if="field.deletable"
                     type="button"
                     :class="classes.kvRemove"
-                    :aria-label="`Remove row ${index + 1}`"
+                    :aria-label="t('action_delete_field', { name: rowName(index) })"
                     :disabled="locked"
                     @click="remove(index)"
                 >
@@ -182,7 +192,7 @@ function dragover(event: DragEvent, index: number) {
             :disabled="locked || full"
             @click="add"
         >
-            <Icon name="plus" class="size-4" />{{ field.addActionLabel }}
+            <Icon name="plus" class="size-4" />{{ labels.add }}
         </button>
     </div>
 </template>

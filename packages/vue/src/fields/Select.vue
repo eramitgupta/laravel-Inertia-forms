@@ -10,6 +10,7 @@ import {
     type FieldOption,
     type SelectSchema,
 } from '../../../core/src';
+import { useTranslate } from '../i18n';
 import Icon from '../Icon.vue';
 import type { FieldComponentEmits, FieldComponentProps } from '../types';
 import { usePopover } from '../usePopover';
@@ -23,6 +24,7 @@ import ClearButton from './ClearButton.vue';
 const props = defineProps<FieldComponentProps<SelectSchema>>();
 const emit = defineEmits<FieldComponentEmits>();
 
+const t = useTranslate();
 const { root, panel, open, setOpen, panelClass } = usePopover();
 const control = ref<HTMLInputElement | HTMLButtonElement | null>(null);
 const query = ref('');
@@ -90,7 +92,9 @@ watch(
 );
 
 const placeholder = computed(
-    () => props.field.placeholder ?? (props.field.searchable ? 'Search…' : 'Select an option'),
+    () =>
+        props.field.placeholder ??
+        t(props.field.searchable ? 'option_search' : 'option_placeholder'),
 );
 const singleLabel = computed(() => (!props.field.multiple ? (selected.value[0]?.label ?? '') : ''));
 
@@ -248,7 +252,7 @@ function input(event: Event) {
                         v-if="!locked"
                         type="button"
                         :class="classes.chipRemove"
-                        :aria-label="`Remove ${option.label}`"
+                        :aria-label="t('option_remove', { name: option.label })"
                         @click.stop="choose(option)"
                     >
                         <Icon name="x" class="size-3" /></button
@@ -286,7 +290,7 @@ function input(event: Event) {
                     placeholder
                 }}</span>
                 <span v-else-if="field.multiple" class="sr-only">{{
-                    `${selected.length} selected`
+                    t('option_selected_count', { count: selected.length })
                 }}</span>
                 <span v-else :class="classes.triggerValue">{{ singleLabel }}</span>
             </button>
@@ -307,7 +311,7 @@ function input(event: Event) {
             :class="panelClass(classes.comboboxList)"
         >
             <div v-if="filtered.length === 0" :class="classes.comboboxEmpty">
-                {{ loading ? 'Searching…' : 'No results' }}
+                {{ loading ? t('option_searching') : t('option_no_results') }}
             </div>
             <div
                 v-for="(option, index) in filtered"

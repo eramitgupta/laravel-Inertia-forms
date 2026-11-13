@@ -21,6 +21,8 @@ import {
     submitIntent,
     validateWizardStep,
     visibleFields,
+    wizardBackLabel,
+    wizardNextLabel,
     wizardStepErrorKeys,
     wizardStepFields,
     wizardSteps,
@@ -32,6 +34,7 @@ import {
 } from '../../core/src';
 import { formContextKey } from './context';
 import FieldRenderer, { builtInComponents } from './FieldRenderer.vue';
+import { translated, useTranslate } from './i18n';
 import SubmitButton from './fields/SubmitButton.vue';
 import Icon from './Icon.vue';
 import { submitterKey } from './submitter';
@@ -49,6 +52,10 @@ import WizardSteps from './WizardSteps.vue';
 const props = defineProps<FormProps>();
 const emit = defineEmits<FormEmits>();
 defineSlots<FormSlots>();
+
+const t = useTranslate();
+const backLabel = translated(wizardBackLabel);
+const nextLabel = translated(wizardNextLabel);
 
 type Row =
     | { kind: 'field'; key: string; field: FieldSchema }
@@ -369,7 +376,7 @@ function submit(event: Event) {
                 :disabled="checkingStep || inertia.processing"
                 @click="goToStep(currentStep - 1)"
             >
-                <Icon name="chevronLeft" :class="classes.submitIcon" />{{ wizard.backLabel }}
+                <Icon name="chevronLeft" :class="classes.submitIcon" />{{ backLabel(wizard) }}
             </button>
             <div :class="classes.wizardActions">
                 <button
@@ -380,7 +387,7 @@ function submit(event: Event) {
                     :aria-busy="checkingStep || undefined"
                 >
                     <span v-if="checkingStep" :class="classes.submitSpinner" aria-hidden="true" />{{
-                        wizard.nextLabel
+                        nextLabel(wizard)
                     }}<Icon v-if="!checkingStep" name="chevronRight" :class="classes.submitIcon" />
                 </button>
                 <template v-else-if="wizardSubmits.length">
@@ -399,14 +406,14 @@ function submit(event: Event) {
                 </template>
                 <SubmitButton
                     v-else-if="showDefaultSubmit"
-                    label="Submit"
+                    :label="t('form_submit')"
                     :processing="inertia.processing"
                 />
             </div>
         </div>
         <SubmitButton
             v-else-if="showDefaultSubmit"
-            label="Submit"
+            :label="t('form_submit')"
             :processing="inertia.processing"
         />
     </form>

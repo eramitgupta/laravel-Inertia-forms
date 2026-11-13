@@ -2,6 +2,7 @@
 import { computed, onMounted, ref, watch } from 'vue';
 import { classes, slugify, slugSource, type SlugSchema } from '../../../core/src';
 import { useFormContext } from '../context';
+import { useTranslate } from '../i18n';
 import Icon from '../Icon.vue';
 import type { FieldComponentEmits, FieldComponentProps } from '../types';
 
@@ -12,6 +13,7 @@ import type { FieldComponentEmits, FieldComponentProps } from '../types';
 const props = defineProps<FieldComponentProps<SlugSchema>>();
 const emit = defineEmits<FieldComponentEmits>();
 const form = useFormContext();
+const t = useTranslate();
 
 const text = computed(() =>
     typeof props.modelValue === 'string' || typeof props.modelValue === 'number'
@@ -90,8 +92,8 @@ function regenerate() {
             <button
                 type="button"
                 :class="classes.iconButton"
-                :aria-label="`Regenerate ${field.label}`"
-                :title="`Regenerate ${field.label}`"
+                :aria-label="t('slug_regenerate', { label: field.label })"
+                :title="t('slug_regenerate', { label: field.label })"
                 @click="regenerate"
             >
                 <Icon name="slugRegenerate" class="size-4" />

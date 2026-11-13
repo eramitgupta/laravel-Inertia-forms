@@ -5,14 +5,21 @@ import {
     cx,
     fileUploadHint,
     formatFileSize,
+    translateParts,
     type FileUploadSchema,
 } from '../../../core/src';
+import { translated, useTranslate } from '../i18n';
 import Icon from '../Icon.vue';
 import type { FieldComponentEmits, FieldComponentProps } from '../types';
 
 const props = defineProps<FieldComponentProps<FileUploadSchema>>();
 const emit = defineEmits<FieldComponentEmits>();
 
+const t = useTranslate();
+const fileSize = translated(formatFileSize);
+const dropPrompt = computed(
+    translated(() => translateParts('file_upload_drop_prompt', ['action'])),
+);
 const input = ref<HTMLInputElement | null>(null);
 const dragging = ref(false);
 const files = computed(() =>
@@ -31,7 +38,7 @@ const previews = computed(() =>
     ),
 );
 const locked = computed(() => props.disabled || props.field.readonly);
-const hint = computed(() => fileUploadHint(props.field));
+const hint = computed(translated(() => fileUploadHint(props.field)));
 
 watchEffect((onCleanup) => {
     const urls = previews.value;
@@ -104,8 +111,12 @@ function drop(event: DragEvent) {
                     field.placeholder
                 }}</template
                 ><template v-else
-                    ><span :class="classes.dropzoneLink">Click to upload</span> or drag and
-                    drop</template
+                    ><template v-for="(part, index) in dropPrompt" :key="index"
+                        ><template v-if="typeof part === 'string'">{{ part }}</template
+                        ><span v-else :class="classes.dropzoneLink">{{
+                            t('file_upload_click_to_upload')
+                        }}</span></template
+                    ></template
                 ></span
             >
             <span v-if="hint" :class="classes.dropzoneHint">{{ hint }}</span>
@@ -136,14 +147,14 @@ function drop(event: DragEvent) {
                     :class="classes.filePreview"
                 />
                 <span :class="classes.fileName">{{ file.name }}</span>
-                <span :class="classes.fileSize">{{ formatFileSize(file.size) }}</span>
+                <span :class="classes.fileSize">{{ fileSize(file.size) }}</span>
                 <!-- prettier-ignore -->
                 <button
                     v-if="!locked"
                     type="button"
                     :class="classes.fileRemove"
                     @click="remove(index)"
-                >Remove</button>
+                >{{ t('action_remove') }}</button>
             </div>
         </div>
     </div>

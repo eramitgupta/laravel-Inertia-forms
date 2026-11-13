@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { classes, nowTime, type TimePickerSchema } from '../../../core/src';
+import { useTranslate } from '../i18n';
 import Icon from '../Icon.vue';
 import type { FieldComponentEmits, FieldComponentProps } from '../types';
 import { usePopover } from '../usePopover';
@@ -15,6 +16,7 @@ import TimeColumns, { type TimePart } from './TimeColumns.vue';
 const props = defineProps<FieldComponentProps<TimePickerSchema>>();
 const emit = defineEmits<FieldComponentEmits>();
 
+const t = useTranslate();
 const { root, panel, open, setOpen, panelClass } = usePopover();
 const locked = computed(() => props.disabled || props.field.readonly);
 const time = computed(() => (typeof props.modelValue === 'string' ? props.modelValue : ''));
@@ -99,10 +101,10 @@ function changeAndClose(value: string) {
                     :class="classes.popoverAction"
                     @click="changeAndClose(nowTime(field.withSeconds, field.minuteStep))"
                 >
-                    Now
+                    {{ t('time_now') }}
                 </button>
                 <button type="button" :class="classes.popoverAction" @click="changeAndClose('')">
-                    Clear
+                    {{ t('action_clear') }}
                 </button>
             </div>
         </div>

@@ -8,6 +8,7 @@ import {
     type LinkParts,
     type LinkSchema,
 } from '../../../core/src';
+import { translated, useTranslate } from '../i18n';
 import Icon from '../Icon.vue';
 import type { FieldComponentEmits, FieldComponentProps } from '../types';
 
@@ -19,12 +20,13 @@ const props = defineProps<FieldComponentProps<LinkSchema>>();
 const emit = defineEmits<FieldComponentEmits>();
 
 const TARGETS = [
-    { value: '_self', label: 'Same tab' },
-    { value: '_blank', label: 'New tab' },
+    { value: '_self', label: 'link_same_tab' },
+    { value: '_blank', label: 'link_new_tab' },
 ] as const;
 
+const t = useTranslate();
 const parts = computed(() => linkParts(props.modelValue));
-const hint = computed(() => linkSchemeHint(props.field, parts.value.url));
+const hint = computed(translated(() => linkSchemeHint(props.field, parts.value.url)));
 const hintId = computed(() => `${props.id}-hint`);
 const locked = computed(() => props.disabled || props.field.readonly);
 const urlDescribedBy = computed(() =>
@@ -54,7 +56,7 @@ function blur(event: Event) {
                 inputmode="url"
                 autocomplete="url"
                 :value="parts.url"
-                :placeholder="field.placeholder ?? 'https://example.com'"
+                :placeholder="field.placeholder ?? t('link_url_placeholder')"
                 :required="field.required"
                 :disabled="disabled"
                 :readonly="field.readonly"
@@ -76,10 +78,10 @@ function blur(event: Event) {
                     :name="`${field.name}[label]`"
                     type="text"
                     :value="parts.label"
-                    :placeholder="field.labelPlaceholder ?? 'Link text'"
+                    :placeholder="field.labelPlaceholder ?? t('link_text_placeholder')"
                     :disabled="disabled"
                     :readonly="field.readonly"
-                    :aria-label="`${field.label} text`"
+                    :aria-label="t('link_text_label', { label: field.label })"
                     :aria-invalid="error ? true : undefined"
                     :class="classes.input"
                     @input="update({ label: ($event.target as HTMLInputElement).value })"
@@ -88,7 +90,7 @@ function blur(event: Event) {
             <div
                 v-if="field.withTarget"
                 role="radiogroup"
-                :aria-label="`Open ${field.label} in`"
+                :aria-label="t('link_target_label', { label: field.label })"
                 :class="classes.segmented"
             >
                 <label v-for="target in TARGETS" :key="target.value" :class="classes.segment">
@@ -105,7 +107,7 @@ function blur(event: Event) {
                         :disabled="locked"
                         :class="classes.visuallyHidden"
                         @change="update({ target: target.value })"
-                    />{{ target.label }}
+                    />{{ t(target.label) }}
                 </label>
             </div>
         </div>

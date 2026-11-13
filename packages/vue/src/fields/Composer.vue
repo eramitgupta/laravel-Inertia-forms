@@ -5,19 +5,26 @@ import {
     classes,
     composerAccept,
     composerHasRoom,
+    composerSendLabel,
     composerValue,
     dragHasFiles,
     formatFileSize,
+    translateParts,
     type ComposerSchema,
     type ComposerValue,
 } from '../../../core/src';
 import { useFormContext } from '../context';
+import { translated, useTranslate } from '../i18n';
 import Icon from '../Icon.vue';
 import type { FieldComponentEmits, FieldComponentProps } from '../types';
 
 const props = defineProps<FieldComponentProps<ComposerSchema>>();
 const emit = defineEmits<FieldComponentEmits>();
 
+const t = useTranslate();
+const fileSize = translated(formatFileSize);
+const sendLabel = computed(translated(() => composerSendLabel(props.field)));
+const hintParts = computed(translated(() => translateParts('composer_hint', ['enter', 'newline'])));
 const form = useFormContext();
 const textarea = ref<HTMLTextAreaElement | null>(null);
 const fileInput = ref<HTMLInputElement | null>(null);
@@ -113,7 +120,7 @@ function drop(event: DragEvent) {
         <div
             v-if="field.quickReplies.length > 0"
             role="group"
-            aria-label="Quick replies"
+            :aria-label="t('composer_quick_replies')"
             :class="classes.composerReplies"
         >
             <!-- prettier-ignore -->
@@ -155,7 +162,7 @@ function drop(event: DragEvent) {
             <div
                 v-if="current.attachments.length > 0"
                 role="list"
-                aria-label="Attachments"
+                :aria-label="t('composer_attachments')"
                 :class="classes.composerFiles"
             >
                 <div
@@ -171,15 +178,13 @@ function drop(event: DragEvent) {
                         <span :class="classes.composerFileName" :title="file.name">{{
                             file.name
                         }}</span>
-                        <span :class="classes.composerFileSize">{{
-                            formatFileSize(file.size)
-                        }}</span>
+                        <span :class="classes.composerFileSize">{{ fileSize(file.size) }}</span>
                     </span>
                     <button
                         v-if="!locked"
                         type="button"
                         :class="classes.composerFileRemove"
-                        :aria-label="`Remove ${file.name}`"
+                        :aria-label="t('composer_remove_attachment', { name: file.name })"
                         @click="removeFile(index)"
                     >
                         <Icon name="x" :class="classes.composerRemoveIcon" />
@@ -191,8 +196,8 @@ function drop(event: DragEvent) {
                     <button
                         type="button"
                         :class="classes.composerAttach"
-                        title="Attach files"
-                        aria-label="Attach files"
+                        :title="t('composer_attach')"
+                        :aria-label="t('composer_attach')"
                         :aria-controls="`${id}-files`"
                         :disabled="!canAttach"
                         @click="fileInput?.click()"
@@ -215,7 +220,10 @@ function drop(event: DragEvent) {
                 </template>
                 <div :class="classes.composerActions">
                     <span v-if="field.maxLength !== null" :class="classes.composerCounter">{{
-                        `${current.message.length} / ${field.maxLength}`
+                        t('form_character_count', {
+                            count: current.message.length,
+                            max: field.maxLength,
+                        })
                     }}</span>
                     <button
                         ref="sendButton"
@@ -224,7 +232,7 @@ function drop(event: DragEvent) {
                         :disabled="locked || processing"
                         :aria-busy="processing || undefined"
                     >
-                        {{ field.sendLabel }}
+                        {{ sendLabel }}
                         <span v-if="processing" :class="classes.spinner" aria-hidden="true" />
                         <Icon v-else name="composerSend" :class="classes.composerSendIcon" />
                     </button>
@@ -232,8 +240,12 @@ function drop(event: DragEvent) {
             </div>
         </div>
         <p v-if="showHint" :id="hintId" :class="classes.composerHint">
-            Press <kbd :class="classes.composerKbd">Enter</kbd> to send,
-            <kbd :class="classes.composerKbd">Shift + Enter</kbd> for new line
+            <template v-for="(part, index) in hintParts" :key="index"
+                ><template v-if="typeof part === 'string'">{{ part }}</template
+                ><kbd v-else :class="classes.composerKbd">{{
+                    t(part.slot === 'enter' ? 'composer_key_enter' : 'composer_key_newline')
+                }}</kbd></template
+            >
         </p>
     </div>
 </template>

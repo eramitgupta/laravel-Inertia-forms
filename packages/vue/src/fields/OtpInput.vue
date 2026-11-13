@@ -9,6 +9,7 @@ import {
     typedOtp,
     type OtpInputSchema,
 } from '../../../core/src';
+import { useTranslate } from '../i18n';
 import type { FieldComponentEmits, FieldComponentProps } from '../types';
 
 /**
@@ -23,7 +24,7 @@ const code = computed(() =>
     cleanOtp(props.modelValue, props.field.alphanumeric).slice(0, length.value),
 );
 const locked = computed(() => props.disabled || props.field.readonly);
-const noun = computed(() => (props.field.alphanumeric ? 'Character' : 'Digit'));
+const t = useTranslate();
 const boxes = ref<HTMLInputElement[]>([]);
 let submitWhenComplete = false;
 /** The code as last typed, so focus handlers see it before the parent updates. */
@@ -131,7 +132,12 @@ function focus(index: number) {
                 :disabled="disabled"
                 :readonly="field.readonly"
                 :autofocus="field.autofocus && index === 1"
-                :aria-label="`${noun} ${index} of ${length}`"
+                :aria-label="
+                    t(field.alphanumeric ? 'otp_character' : 'otp_digit', {
+                        number: index,
+                        total: length,
+                    })
+                "
                 :aria-invalid="error ? true : undefined"
                 :class="classes.otpBox"
                 @focus="focus(index - 1)"

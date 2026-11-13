@@ -3,11 +3,13 @@ import {
     classes,
     wizardCircleClass,
     wizardProgress,
+    wizardProgressText,
     wizardStepIcon,
     wizardStepLabel,
     wizardStepState,
     type FieldsetSchema,
 } from '../../core/src';
+import { translated, useTranslate } from './i18n';
 import Icon from './Icon.vue';
 
 /**
@@ -23,16 +25,20 @@ const emit = defineEmits<{
     /** Go back to a completed step. */
     select: [index: number];
 }>();
+
+const t = useTranslate();
+const progressText = translated(wizardProgressText);
+const stepLabel = translated(wizardStepLabel);
 </script>
 
 <template>
-    <nav aria-label="Progress" :class="classes.wizardNav">
+    <nav :aria-label="t('wizard_progress_label')" :class="classes.wizardNav">
         <div v-if="steps[current]" :class="classes.wizardCompact">
             <p :class="classes.wizardCompactCount">
-                {{ `Step ${current + 1} of ${steps.length}` }}
+                {{ progressText(current, steps.length) }}
             </p>
             <p :class="classes.wizardCompactTitle">
-                {{ wizardStepLabel(steps[current]!, current) }}
+                {{ stepLabel(steps[current]!, current) }}
             </p>
             <div :class="classes.wizardCompactTrack" aria-hidden="true">
                 <span
@@ -79,7 +85,7 @@ const emit = defineEmits<{
                                     : classes.wizardStepTitle
                             "
                         >
-                            {{ wizardStepLabel(fieldset, index) }}
+                            {{ stepLabel(fieldset, index) }}
                         </span>
                         <span v-if="fieldset.description" :class="classes.wizardStepDescription">
                             {{ fieldset.description }}
